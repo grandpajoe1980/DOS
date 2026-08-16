@@ -3,16 +3,70 @@ import Foundation
 import FoundationNetworking
 #endif
 
+public struct APIErrorEnvelope: Codable, Equatable, Sendable {
+    public let code: String
+    public let message: String
+    public let requestID: String?
+    public let details: [String: String]?
+
+    enum CodingKeys: String, CodingKey {
+        case code
+        case message
+        case requestID = "request_id"
+        case details
+    }
+
+    public init(code: String, message: String, requestID: String? = nil, details: [String: String]? = nil) {
+        self.code = code
+        self.message = message
+        self.requestID = requestID
+        self.details = details
+    }
+}
+
 public enum APIError: Error, LocalizedError, Equatable {
-    case invalidResponse, unauthorized, conflict, server(status: Int), decoding
+    case invalidResponse
+    case unauthorized
+    case conflict
+    case server(status: Int)
+    case serverWithEnvelope(status: Int, envelope: APIErrorEnvelope)
+    case decoding
+
     public var errorDescription: String? {
         switch self {
         case .invalidResponse: "The service returned an invalid response."
         case .unauthorized: "Your session has expired. Please sign in again."
         case .conflict: "This information changed. Refresh and try again."
         case .server: "The service is temporarily unavailable."
+        case .serverWithEnvelope(_, let envelope): envelope.message
         case .decoding: "The response could not be read."
         }
+    }
+}
+
+public protocol TokenStore: Sendable {
+    func getToken() async -> String?
+    func setToken(_ token: String?) async
+    func clear() async
+}
+
+public actor InMemoryTokenStore: TokenStore {
+    private var token: String?
+
+    public init(token: String? = nil) {
+        self.token = token
+    }
+
+    public func getToken() -> String? {
+        token
+    }
+
+    public func setToken(_ token: String?) {
+        self.token = token
+    }
+
+    public func clear() {
+        self.token = nil
     }
 }
 
@@ -100,9 +154,9 @@ public struct AppDependencies: Sendable {
         self.requiredDocumentIDs = requiredDocumentIDs
     }
 
-    public static func live(configuration: AppRuntimeConfiguration, session: URLSession = .shared) -> Self {
+    public static func live(configuration: AppRuntimeConfiguration, session: URLSession = .shared, tokenStore: (any TokenStore)? = nil) -> Self {
         Self(
-            service: APIClient(baseURL: configuration.apiBaseURL, session: session),
+            service: APIClient(baseURL: configuration.apiBaseURL, session: session, tokenStore: tokenStore),
             selection: .live(baseURL: configuration.apiBaseURL),
             organizationSlug: "community-action",
             requiredDocumentIDs: []
@@ -113,11 +167,14 @@ public struct AppDependencies: Sendable {
 public struct APIClient: EventServing, Sendable {
     private let baseURL: URL
     private let session: URLSession
+    private let tokenStore: (any TokenStore)?
     private let decoder: JSONDecoder
     private let encoder: JSONEncoder
 
-    public init(baseURL: URL, session: URLSession = .shared) {
-        self.baseURL = baseURL; self.session = session
+    public init(baseURL: URL, session: URLSession = .shared, tokenStore: (any TokenStore)? = nil) {
+        self.baseURL = baseURL
+        self.session = session
+        self.tokenStore = tokenStore
         decoder = JSONDecoder(); decoder.dateDecodingStrategy = .iso8601
         encoder = JSONEncoder(); encoder.dateEncodingStrategy = .iso8601
     }
@@ -143,13 +200,20 @@ public struct APIClient: EventServing, Sendable {
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         if let idempotencyKey { request.setValue(idempotencyKey.uuidString, forHTTPHeaderField: "Idempotency-Key") }
+        if let token = await tokenStore?.getToken() {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
         let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse else { throw APIError.invalidResponse }
         switch http.statusCode {
         case 200..<300: break
         case 401, 403: throw APIError.unauthorized
         case 409: throw APIError.conflict
-        default: throw APIError.server(status: http.statusCode)
+        default:
+            if let envelope = try? decoder.decode(APIErrorEnvelope.self, from: data) {
+                throw APIError.serverWithEnvelope(status: http.statusCode, envelope: envelope)
+            }
+            throw APIError.server(status: http.statusCode)
         }
         if Response.self == EmptyResponse.self, data.isEmpty { return EmptyResponse() as! Response }
         do { return try decoder.decode(Response.self, from: data) } catch { throw APIError.decoding }
@@ -157,3 +221,4 @@ public struct APIClient: EventServing, Sendable {
 }
 
 private struct EmptyResponse: Codable { init() {} }
+

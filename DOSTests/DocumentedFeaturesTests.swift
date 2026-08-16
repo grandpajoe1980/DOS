@@ -74,9 +74,76 @@ func liveServiceSelectionIsStable() throws {
     #expect(first.selection != .preview)
 }
 
+@Test("UserProfile and Job models encode and decode with nullable organization")
+func userProfileAndJobCoding() throws {
+    let decoder = JSONDecoder()
+    decoder.dateDecodingStrategy = .iso8601
+
+    let profileJSON = """
+    {
+        "id": "40000000-0000-4000-8000-000000000001",
+        "display_name": "Jordan Volunteer",
+        "state": "active",
+        "version": 2
+    }
+    """
+    let profile = try decoder.decode(UserProfile.self, from: Data(profileJSON.utf8))
+    #expect(profile.displayName == "Jordan Volunteer")
+    #expect(profile.state == .active)
+    #expect(profile.version == 2)
+
+    let personalJobJSON = """
+    {
+        "id": "70000000-0000-4000-8000-000000000001",
+        "organization_id": null,
+        "kind": "personal_data_export",
+        "state": "queued",
+        "created_at": "2027-01-16T12:00:00Z",
+        "version": 1
+    }
+    """
+    let personalJob = try decoder.decode(Job.self, from: Data(personalJobJSON.utf8))
+    #expect(personalJob.organizationID == nil)
+    #expect(personalJob.kind == .personalDataExport)
+    #expect(personalJob.state == .queued)
+
+    let tenantJobJSON = """
+    {
+        "id": "70000000-0000-4000-8000-000000000002",
+        "organization_id": "10000000-0000-4000-8000-000000000001",
+        "kind": "attendance_export",
+        "state": "succeeded",
+        "created_at": "2027-01-16T12:00:00Z",
+        "version": 3
+    }
+    """
+    let tenantJob = try decoder.decode(Job.self, from: Data(tenantJobJSON.utf8))
+    #expect(tenantJob.organizationID == UUID(uuidString: "10000000-0000-4000-8000-000000000001"))
+    #expect(tenantJob.kind == .attendanceExport)
+    #expect(tenantJob.state == .succeeded)
+}
+
+@Test("InMemoryTokenStore stores and clears tokens safely")
+func tokenStoreOperations() async {
+    let store = InMemoryTokenStore()
+    #expect(await store.getToken() == nil)
+    await store.setToken("test-jwt-token")
+    #expect(await store.getToken() == "test-jwt-token")
+    await store.clear()
+    #expect(await store.getToken() == nil)
+}
+
+@Test("APIErrorEnvelope formats human-readable message")
+func apiErrorEnvelopeHandling() {
+    let envelope = APIErrorEnvelope(code: "CONFLICT", message: "Resource was modified", requestID: "req-123")
+    let error = APIError.serverWithEnvelope(status: 409, envelope: envelope)
+    #expect(error.errorDescription == "Resource was modified")
+}
+
 #if DEBUG
 @Test("Preview service requires an explicit debug-only selection")
 func previewServiceSelectionIsExplicit() {
     #expect(AppDependencies.preview().selection == .preview)
 }
 #endif
+

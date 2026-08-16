@@ -2609,7 +2609,10 @@ components:
       required: [id, organization_id, kind, state, created_at, version]
       properties:
         id: {$ref: "#/components/schemas/UUID"}
-        organization_id: {$ref: "#/components/schemas/UUID"}
+        organization_id:
+          oneOf:
+            - {$ref: "#/components/schemas/UUID"}
+            - {type: "null"}
         kind:
           type: string
           enum:

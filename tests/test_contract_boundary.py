@@ -612,6 +612,36 @@ class ContractBoundaryTests(unittest.TestCase):
                     f"Realtime schema accepted sensitive field {field}",
                 )
 
+    def test_personal_and_tenant_export_job_contracts(self) -> None:
+        personal_job = {
+            "id": "70000000-0000-4000-8000-000000000001",
+            "organization_id": None,
+            "kind": "personal_data_export",
+            "state": "queued",
+            "created_at": "2027-01-16T12:00:00Z",
+            "result_url": None,
+            "result_expires_at": None,
+            "version": 1,
+        }
+        self.assert_valid("Job", personal_job)
+
+        tenant_job = {
+            "id": "70000000-0000-4000-8000-000000000002",
+            "organization_id": "10000000-0000-4000-8000-000000000001",
+            "kind": "attendance_export",
+            "state": "succeeded",
+            "created_at": "2027-01-16T12:00:00Z",
+            "result_url": "https://downloads.dayofservice.example/export.csv",
+            "result_expires_at": "2027-01-17T12:00:00Z",
+            "version": 2,
+        }
+        self.assert_valid("Job", tenant_job)
+
+        invalid_job = copy.deepcopy(personal_job)
+        invalid_job["organization_id"] = "not-a-uuid"
+        self.assert_invalid("Job", invalid_job, "Job accepted invalid non-UUID organization_id")
+
 
 if __name__ == "__main__":
     unittest.main()
+

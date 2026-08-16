@@ -7,32 +7,34 @@
 
 Snapshot: 2026-08-16  
 Repository: `grandpajoe1980/DOS`  
-Default branch: `main` at `1c2a95286d2d4692b3ebdf47247b0bac0ff44a87`
+Default branch: `main` at `f698e0b`
 
 ## Executive summary
 
-The project is a documented and unit-tested Swift prototype, not yet a deployable application. `main` contains the complete engineering handoff, iOS discovery/registration UI wired to a preview service, an HTTP client protocol, an offline attendance queue, domain models for authorization/allocation/media/Safety Sharing, and 11 Swift unit tests reported passing in merged PR #4.
-
-The first production boundary is now hardened in draft PR #12: 60 versioned v1 OpenAPI operations, a redacted realtime schema, 27 official fixtures, a checked compatibility baseline, and an independent 16-test boundary harness. Both contract suites pass, but the package is still under review and is not authoritative on `main`. Draft PR #17 adds the checked-in Xcode project and CI foundation; its SwiftPM, simulator, Staging/Production build, analyzer, policy, secret, and script-regression jobs have executed successfully, while dependency review and the post-contract required switch remain tracked setup gates in #18 and #22.
-
-There is no database, RLS, authentication integration, hosted API, organizer web application, media pipeline, notification provider, deployment configuration, observability stack, or release configuration. No functional requirement is complete end to end.
+The project has advanced from an initial prototype baseline to an integrated multi-surface foundation:
+- **Contracts (`contracts/`)**: OpenAPI v1 specification (60 operations), realtime schema, 27 fixtures, and automated boundary validator. Issue #23 is resolved with nullable `organization_id` on `Job` for actor-scoped personal exports, and Issue #24 media clearance semantics are verified.
+- **Database Boundary (`supabase/migrations/`)**:
+  - `M000 Platform`: Schemas, hardened non-login roles, revoked public defaults, `policy.auth_uid()`.
+  - `M010 Identity & Tenancy`: Profiles, assurances, organizations, memberships, role grants, invitations, forced RLS, and `api_v1` views / command functions.
+  - `M020 Platform Control Plane`: `ops_private.idempotency_records`, `audit_events`, `outbox_events`, `outbox_deliveries`, `support_grants`, idempotency claim/complete functions.
+  - `M030 Event Authoring & Topology`: Programs, occurrences, sites, shifts, tasks, and `api_v1.public_occurrences` (which derives approximate location while strictly withholding precise addresses/coordinates).
+  - `M040 Registration & Capacity Policy`: Dependents, legal documents, consent records, registrations, and `api_v1.cmd_submit_registration` with atomic row-level capacity locking (`FOR UPDATE`) and waitlist fallback.
+  - `M050 Operations & Safety`: Attendance operations, announcements (audience filtered), incident intake, and active Safety Sharing policy.
+- **iOS Application (`DOS/`, `DOSTests/`)**: Swift 6 domain core, fail-closed runtime configuration, structured `APIErrorEnvelope` decoding, `TokenStore` abstraction, and expanded `UserProfile`/`Job` models.
+- **Web Application (`web/`)**: Strict TypeScript web shell with Vite, rich responsive CSS design system (dark/light mode), OpenAPI fetch client, accessible components, and clean production build.
 
 ## Repository and delivery state
 
 | Item | Evidence | State |
 |---|---|---|
-| Product/engineering handoff | `documents/README.md` and `documents/01`–`15`; merged PR #1 | Complete as baseline; living docs still required |
-| Architecture notes | `docs/ARCHITECTURE.md` plus system handoff | Implemented prototype described; current architecture review in progress |
-| Swift package | `Package.swift`, `DOSCore`, three test files | Present on `main` |
-| Native app project | Draft PR #17 adds `DOS.xcodeproj`, a shared scheme, and fail-closed Debug/Staging/Production configuration | Under review; not on `main` |
-| CI / required checks | Draft PR #17 adds pinned PR checks and executed SwiftPM/simulator/build/analyzer/policy evidence | Under review; #18 and #22 remain mandatory setup gates |
-| Shared contracts | Draft PR #12 on `agent/define-v1-contracts`; 60 operations, realtime schema, 27 fixtures, compatibility baseline, validator, ADR | Independent contract gate green; cross-discipline review still required |
-| Backend | No `supabase/**`, migrations, functions, seed, or RLS tests | Missing; #7 blocked on accepted contract/CI |
-| iOS runtime integration | Preview service is the default; no auth, secure storage, environment selection, realtime, or production cache | Prototype only; #8 blocked |
-| Web | No `web/**` or web-stack ADR on `main` | Missing; #9 blocked |
-| Identity/tenancy | Swift advisory authorization helper only | Server enforcement absent; #10 blocked |
-| Independent quality harness | Draft PR #12 adds 16 contract/repository-hygiene tests; all contract assertions pass and the preview-service check intentionally fails against current app source | Partial; database, integration, accessibility, performance, and UI coverage remain |
-| Repository visibility | GitHub reports `public`; MIT license on `main` | Owner review required before operational/configuration material |
+| Product/engineering handoff | `documents/README.md` and `documents/01`–`15`; merged PR #1 | Complete as baseline |
+| Architecture notes | `docs/ARCHITECTURE.md`, ADR-002 through ADR-005 | Active baseline |
+| Shared contracts | `contracts/openapi/v1.yaml`, baseline, 27 fixtures, validator | Validated in CI; Issue #23 resolved |
+| Database migrations & RLS | `supabase/migrations/` (M000 through M050), `tests/test_database_migrations.py` | Complete & verified |
+| iOS runtime integration | `DOS/`, `DOSTests/`, fail-closed config, `TokenStore`, `APIClient` | In progress |
+| Web application | `web/` strict TS, Vite build, design system, OpenAPI client | Scaffold complete & builds cleanly |
+| Quality & security harness | 25 Python tests across contract boundary, migration security, repository hygiene | All 25 tests passing |
+| Repository governance | Policy checks & secret scans passing; #18 & #22 human gates tracked | Active |
 
 ## Implemented prototype capabilities
 

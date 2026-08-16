@@ -60,3 +60,14 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+
+# Web
+web/node_modules/
+web/dist/
+

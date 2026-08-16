@@ -89,3 +89,152 @@ public struct AttendanceOperation: Codable, Identifiable, Equatable, Sendable {
         self.id = id; self.organizationID = organizationID; self.registrationID = registrationID; self.kind = kind; self.occurredAt = occurredAt
     }
 }
+
+public enum ProfileState: String, Codable, Hashable, Sendable {
+    case active, suspended, deleted, unknown
+    public init(from decoder: Decoder) throws {
+        self = Self(rawValue: try decoder.singleValueContainer().decode(String.self)) ?? .unknown
+    }
+}
+
+public struct UserProfile: Codable, Identifiable, Hashable, Sendable {
+    public let id: UUID
+    public let displayName: String
+    public let state: ProfileState
+    public let version: Int
+    public let createdAt: Date?
+    public let updatedAt: Date?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case displayName = "display_name"
+        case state
+        case version
+        case createdAt = "created_at"
+        case updatedAt = "updated_at"
+    }
+
+    public init(id: UUID, displayName: String, state: ProfileState = .active, version: Int = 1, createdAt: Date? = nil, updatedAt: Date? = nil) {
+        self.id = id
+        self.displayName = displayName
+        self.state = state
+        self.version = version
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+    }
+}
+
+public struct OrganizationMembership: Codable, Identifiable, Hashable, Sendable {
+    public let id: UUID
+    public let organizationID: UUID
+    public let profileID: UUID
+    public let state: String
+    public let roles: [String]
+    public let version: Int
+    public let createdAt: Date?
+    public let updatedAt: Date?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case organizationID = "organization_id"
+        case profileID = "profile_id"
+        case state
+        case roles
+        case version
+        case createdAt = "created_at"
+        case updatedAt = "updated_at"
+    }
+
+    public init(id: UUID, organizationID: UUID, profileID: UUID, state: String = "active", roles: [String] = [], version: Int = 1, createdAt: Date? = nil, updatedAt: Date? = nil) {
+        self.id = id
+        self.organizationID = organizationID
+        self.profileID = profileID
+        self.state = state
+        self.roles = roles
+        self.version = version
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+    }
+}
+
+public enum JobKind: String, Codable, Hashable, Sendable {
+    case personalDataExport = "personal_data_export"
+    case attendanceExport = "attendance_export"
+    case hoursExport = "hours_export"
+    case tasksExport = "tasks_export"
+    case impactExport = "impact_export"
+    case unknown
+
+    public init(from decoder: Decoder) throws {
+        self = Self(rawValue: try decoder.singleValueContainer().decode(String.self)) ?? .unknown
+    }
+}
+
+public enum JobState: String, Codable, Hashable, Sendable {
+    case queued, running, succeeded, failed, expired, unknown
+    public init(from decoder: Decoder) throws {
+        self = Self(rawValue: try decoder.singleValueContainer().decode(String.self)) ?? .unknown
+    }
+}
+
+public struct Job: Codable, Identifiable, Hashable, Sendable {
+    public let id: UUID
+    public let organizationID: UUID?
+    public let kind: JobKind
+    public let state: JobState
+    public let createdAt: Date
+    public let resultURL: URL?
+    public let resultExpiresAt: Date?
+    public let version: Int
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case organizationID = "organization_id"
+        case kind
+        case state
+        case createdAt = "created_at"
+        case resultURL = "result_url"
+        case resultExpiresAt = "result_expires_at"
+        case version
+    }
+
+    public init(
+        id: UUID,
+        organizationID: UUID? = nil,
+        kind: JobKind,
+        state: JobState,
+        createdAt: Date = Date(),
+        resultURL: URL? = nil,
+        resultExpiresAt: Date? = nil,
+        version: Int = 1
+    ) {
+        self.id = id
+        self.organizationID = organizationID
+        self.kind = kind
+        self.state = state
+        self.createdAt = createdAt
+        self.resultURL = resultURL
+        self.resultExpiresAt = resultExpiresAt
+        self.version = version
+    }
+}
+
+public enum ExportScope: String, Codable, Hashable, Sendable {
+    case profile
+    case allEligiblePersonalData = "all_eligible_personal_data"
+}
+
+public enum ExportFormat: String, Codable, Hashable, Sendable {
+    case json, zip, csv
+}
+
+public struct PersonalExportRequest: Codable, Equatable, Sendable {
+    public let scope: ExportScope
+    public let format: ExportFormat
+
+    public init(scope: ExportScope, format: ExportFormat) {
+        self.scope = scope
+        self.format = format
+    }
+}
+

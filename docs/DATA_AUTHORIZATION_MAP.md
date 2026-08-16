@@ -336,7 +336,7 @@ suite before beta.
 
 | ID | Risk/gap | Fail-closed implementation position | Required owner |
 |---|---|---|---|
-| DA-001 | createPersonalExport has no organization selector but returns Job, whose organization_id is required. A person may belong to several organizations. | Do not fabricate a tenant or choose first membership. Model personal jobs as actor-scoped internally and block contract mapping until response tenant semantics are clarified. | Contract + product + privacy |
+| DA-001 | createPersonalExport has no organization selector but returns Job. | **Resolved**: Job schema updated so `organization_id` is nullable (`oneOf: [UUID, null]`). Personal export jobs return `null` while tenant-scoped export jobs return their tenant UUID. Contract baseline, schemas, and boundary tests updated. | Contract + product + privacy (Complete) |
 | DA-002 | Media request has an attestation but no subject list or guardian-clearance capture. Dependent media_visibility, especially public publication, cannot be proven. | Keep originals private; allow event feed only under accepted attestation/report policy; deny public publication involving identifiable dependent without separate current clearance. Add approved clearance workflow/contract before gallery launch. | Product + privacy/legal + contract |
 | DA-003 | Contract reads legal documents but has no authoring/publishing/occurrence-requirement mutation. Organizer authoring cannot be fully self-service through v1. | Seed/admin-import in non-production only; no direct organizer table access. Add reviewed contract operations before production self-service. | Product + contract |
 | DA-004 | EventOccurrenceUpdate sites are create-shaped with no stable IDs. Safe published topology edits cannot map without reference churn. | Permit whole-tree replacement only in draft before dependent records; reject published replacement. Add ID-based operations if post-publish edits are required. | Product + contract |
@@ -347,6 +347,5 @@ suite before beta.
 | DA-009 | The server-owned source and assurance level for adult status are unspecified, while organization creation, uploads and Safety Sharing require an adult. | Keep profile_assurances as the policy source and use synthetic status only outside production. Do not enable adult-only production actions until collection, notice, verification and revocation behavior are approved. | Product + identity + privacy/legal |
 | DA-010 | AssignmentDirections requires latitude/longitude, but site authoring supplies only a precise address; public approximate coordinates also have no input. | Store address separately, geocode server-side, require organizer verification before precise directions, and derive/withhold the public point by policy. Do not invent coordinates or copy the precise point into the public view. | Product + platform + privacy |
 
-DA-001 and DA-002 block their affected migration/API acceptance. DA-006 blocks
-production export/retention claims. Other items may proceed only with the
-fail-closed positions and tracked follow-up work.
+DA-002 blocks anonymous public gallery launch. DA-006 blocks production export/retention claims. Other items proceed with the documented fail-closed positions.
+
