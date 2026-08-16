@@ -794,14 +794,23 @@ components:
             allow_teams: {type: boolean}
             allow_dependents: {type: boolean}
     EventDefinition:
-      allOf:
-        - {$ref: "#/components/schemas/EventDefinitionCreate"}
-        - type: object
-          required: [id, organization_id, version]
-          properties:
-            id: {$ref: "#/components/schemas/UUID"}
-            organization_id: {$ref: "#/components/schemas/UUID"}
-            version: {$ref: "#/components/schemas/Version"}
+      type: object
+      required:
+        [id, organization_id, title, description, eligibility,
+         registration_policy, version]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        organization_id: {$ref: "#/components/schemas/UUID"}
+        title: {type: string}
+        description: {type: string}
+        eligibility: {type: string}
+        default_legal_document_id:
+          oneOf:
+            - {$ref: "#/components/schemas/UUID"}
+            - {type: "null"}
+        registration_policy:
+          type: object
+        version: {$ref: "#/components/schemas/Version"}
     ServiceTaskCreate:
       type: object
       additionalProperties: false
@@ -831,7 +840,7 @@ components:
       additionalProperties: false
       required:
         [name, public_location, precise_operations_address, accessibility,
-         arrival_notes, soft_target, shifts]
+         public_arrival_notes, soft_target, shifts]
       properties:
         name: {type: string, minLength: 1, maxLength: 160}
         public_location: {type: string, minLength: 1, maxLength: 240}
@@ -840,7 +849,7 @@ components:
           type: array
           maxItems: 40
           items: {type: string, maxLength: 80}
-        arrival_notes: {type: string, maxLength: 4000}
+        public_arrival_notes: {type: string, maxLength: 4000}
         soft_target: {type: integer, minimum: 0}
         hard_safety_limit:
           oneOf:
@@ -881,7 +890,7 @@ components:
       type: object
       required:
         [id, organization_id, name, public_location, accessibility,
-         arrival_notes, soft_target]
+         public_arrival_notes, soft_target]
       properties:
         id: {$ref: "#/components/schemas/UUID"}
         organization_id: {$ref: "#/components/schemas/UUID"}
@@ -891,7 +900,7 @@ components:
         accessibility:
           type: array
           items: {type: string}
-        arrival_notes: {type: string}
+        public_arrival_notes: {type: string}
         soft_target: {type: integer, minimum: 0}
     PublicOccurrence:
       type: object
@@ -924,14 +933,20 @@ components:
             - {type: string, maxLength: 512}
             - {type: "null"}
     ServiceTask:
-      allOf:
-        - {$ref: "#/components/schemas/ServiceTaskCreate"}
-        - type: object
-          required: [id, organization_id, version]
-          properties:
-            id: {$ref: "#/components/schemas/UUID"}
-            organization_id: {$ref: "#/components/schemas/UUID"}
-            version: {$ref: "#/components/schemas/Version"}
+      type: object
+      required:
+        [id, organization_id, title, description, minimum_age,
+         accessibility_tags, version]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        organization_id: {$ref: "#/components/schemas/UUID"}
+        title: {type: string}
+        description: {type: string}
+        minimum_age: {type: integer}
+        accessibility_tags:
+          type: array
+          items: {type: string}
+        version: {$ref: "#/components/schemas/Version"}
     Shift:
       type: object
       required: [id, organization_id, starts_at, ends_at, tasks, version]
@@ -948,7 +963,7 @@ components:
       type: object
       required:
         [id, organization_id, name, public_location, precise_operations_address,
-         accessibility, arrival_notes, soft_target, shifts, version]
+         accessibility, public_arrival_notes, soft_target, shifts, version]
       properties:
         id: {$ref: "#/components/schemas/UUID"}
         organization_id: {$ref: "#/components/schemas/UUID"}
@@ -958,7 +973,7 @@ components:
         accessibility:
           type: array
           items: {type: string}
-        arrival_notes: {type: string}
+        public_arrival_notes: {type: string}
         soft_target: {type: integer}
         hard_safety_limit:
           oneOf:
@@ -1172,14 +1187,19 @@ components:
         occurred_at: {$ref: "#/components/schemas/Timestamp"}
         client_operation_id: {$ref: "#/components/schemas/UUID"}
     AttendanceEvent:
-      allOf:
-        - {$ref: "#/components/schemas/AttendanceEventCreate"}
-        - type: object
-          required: [id, organization_id, recorded_at]
-          properties:
-            id: {$ref: "#/components/schemas/UUID"}
-            organization_id: {$ref: "#/components/schemas/UUID"}
-            recorded_at: {$ref: "#/components/schemas/Timestamp"}
+      type: object
+      required:
+        [id, organization_id, registration_participant_id, assignment_id,
+         kind, occurred_at, client_operation_id, recorded_at]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        organization_id: {$ref: "#/components/schemas/UUID"}
+        registration_participant_id: {$ref: "#/components/schemas/UUID"}
+        assignment_id: {$ref: "#/components/schemas/UUID"}
+        kind: {type: string, x-known-values: [check_in, check_out]}
+        occurred_at: {$ref: "#/components/schemas/Timestamp"}
+        client_operation_id: {$ref: "#/components/schemas/UUID"}
+        recorded_at: {$ref: "#/components/schemas/Timestamp"}
     AnnouncementCreate:
       type: object
       additionalProperties: false
@@ -1281,7 +1301,9 @@ components:
     MediaUploadRequest:
       type: object
       additionalProperties: false
-      required: [occurrence_id, content_type, byte_count, checksum_sha256, caption]
+      required:
+        [occurrence_id, content_type, byte_count, checksum_sha256, caption,
+         participant_visibility_attested]
       properties:
         occurrence_id: {$ref: "#/components/schemas/UUID"}
         site_id:

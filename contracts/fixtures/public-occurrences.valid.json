@@ -22,7 +22,7 @@
             "precision": "approximate"
           },
           "accessibility": ["step_free_entry"],
-          "arrival_notes": "Exact arrival instructions are provided after assignment.",
+          "public_arrival_notes": "Exact arrival instructions are provided after assignment.",
           "soft_target": 50
         }
       ]
