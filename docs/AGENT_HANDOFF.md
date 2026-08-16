@@ -21,7 +21,7 @@ written before the latest merges. This handoff records the current checkpoint.
 |---|---|---|---|
 | `main` before this handoff commit | `e82dab1ba2d694509cee4b2ffb2c7acca7f70b5a` | Integrated | All checkpoint work through merged PR #27 |
 | PR #26 / `agent/checkpoint-m000-m010-data-boundary` | `c98131125271ba8e7002a0130356b6a37cbf50d0` | Merged; implementation is still explicitly partial | Complete M000 database boundary plus a deliberately partial, non-site M010 identity/tenancy slice |
-| PR #27 / `agent/checkpoint-production-composition` | `dd31012c2afb5285c27de5e014c5ff3c759792a4` | Merged; pull-request CI run 31967683513 was still running at handoff | Explicit app dependency composition and fail-closed non-Debug runtime configuration |
+| PR #27 / `agent/checkpoint-production-composition` | `dd31012c2afb5285c27de5e014c5ff3c759792a4` | Merged; pull-request CI run 31967683513 completed successfully | Explicit app dependency composition and fail-closed non-Debug runtime configuration |
 
 Merged work:
 
@@ -137,10 +137,9 @@ notification provider, production observability, or release configuration.
 
 ## Recommended continuation order
 
-1. Inspect PR #27's final CI result and the next `main` CI run. The narrow
-   composition checkpoint is merged, but do not close all of #8; secure
-   auth/session storage, complete contract mapping, cache/realtime, navigation,
-   and UI automation remain.
+1. Treat PR #27's successful CI as validation of the narrow merged composition
+   checkpoint, but do not close all of #8; secure auth/session storage, complete
+   contract mapping, cache/realtime, navigation, and UI automation remain.
 2. Resolve #23 and #24 as explicit contract/architecture decisions. Update the
    OpenAPI contract, fixtures, compatibility baseline only when deliberately
    approved, `DATA_AUTHORIZATION_MAP.md`, ADRs, and tests together.
