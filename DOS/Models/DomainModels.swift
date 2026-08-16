@@ -11,7 +11,10 @@ public struct Organization: Codable, Identifiable, Hashable, Sendable {
     }
 }
 
-public enum OccurrenceState: String, Codable, Sendable { case draft, published, archived, unknown }
+public enum OccurrenceState: String, Codable, Hashable, Sendable {
+    case draft, published, archived, unknown
+    public init(from decoder: Decoder) throws { self = Self(rawValue: try decoder.singleValueContainer().decode(String.self)) ?? .unknown }
+}
 
 public struct ServiceSite: Codable, Identifiable, Hashable, Sendable {
     public let id: UUID
@@ -46,8 +49,11 @@ public struct EventOccurrence: Codable, Identifiable, Hashable, Sendable {
     }
 }
 
-public enum TeamMode: String, Codable, CaseIterable, Sendable { case individual, preferTogether = "prefer_together", mustStayTogether = "must_stay_together" }
-public enum RegistrationState: String, Codable, Sendable { case draft, submitted, waitlisted, assigned, cancelled, unknown }
+public enum TeamMode: String, Codable, CaseIterable, Hashable, Sendable { case individual, preferTogether = "prefer_together", mustStayTogether = "must_stay_together" }
+public enum RegistrationState: String, Codable, Hashable, Sendable {
+    case draft, submitted, waitlisted, assigned, cancelled, unknown
+    public init(from decoder: Decoder) throws { self = Self(rawValue: try decoder.singleValueContainer().decode(String.self)) ?? .unknown }
+}
 
 public struct RegistrationRequest: Codable, Equatable, Sendable {
     public let occurrenceID: UUID

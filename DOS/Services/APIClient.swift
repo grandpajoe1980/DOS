@@ -35,7 +35,9 @@ public struct APIClient: EventServing, Sendable {
     }
 
     public func occurrences(organizationSlug: String) async throws -> [EventOccurrence] {
-        let slug = organizationSlug.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? organizationSlug
+        var componentCharacters = CharacterSet.urlPathAllowed
+        componentCharacters.remove(charactersIn: "/?#")
+        let slug = organizationSlug.addingPercentEncoding(withAllowedCharacters: componentCharacters) ?? organizationSlug
         return try await send(path: "v1/public/organizations/\(slug)/occurrences", method: "GET", body: Optional<Data>.none, idempotencyKey: nil)
     }
 
