@@ -1,0 +1,16 @@
+#include "Base.xcconfig"
+
+// Public API hosts are configuration, not credentials. This deliberately uses
+// RFC 2606's .invalid TLD until the production environment is provisioned.
+DOS_APP_ENVIRONMENT = production
+DOS_APP_DISPLAY_NAME = Day of Service
+DOS_APP_BUNDLE_IDENTIFIER = org.dayofservice.app
+DOS_API_SCHEME = https
+DOS_API_HOST = api.dayofservice.invalid
+
+SWIFT_ACTIVE_COMPILATION_CONDITIONS = $(inherited) PRODUCTION
+SWIFT_OPTIMIZATION_LEVEL = -O
+ENABLE_TESTABILITY = NO
+DEBUG_INFORMATION_FORMAT = dwarf-with-dsym
+ONLY_ACTIVE_ARCH = NO
+

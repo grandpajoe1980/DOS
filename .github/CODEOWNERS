@@ -1,0 +1,28 @@
+# The repository currently has one GitHub owner. This file establishes the
+# review surfaces now; replace or add team handles as the maintainer team grows.
+
+* @grandpajoe1980
+
+# Shared contracts and architectural decisions
+/contracts/ @grandpajoe1980
+/documents/adr/ @grandpajoe1980
+/docs/adr/ @grandpajoe1980
+
+# Database migrations, functions, RLS, and policy tests
+/supabase/migrations/ @grandpajoe1980
+/supabase/functions/ @grandpajoe1980
+/supabase/tests/ @grandpajoe1980
+
+# Native and web clients
+/DOS/ @grandpajoe1980
+/DOSTests/ @grandpajoe1980
+/DOSUITests/ @grandpajoe1980
+/web/ @grandpajoe1980
+
+# Build, CI, environment, and release surfaces
+/.github/ @grandpajoe1980
+/Configuration/ @grandpajoe1980
+/DOS.xcodeproj/ @grandpajoe1980
+/Package.swift @grandpajoe1980
+/scripts/ci/ @grandpajoe1980
+
