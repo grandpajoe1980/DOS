@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SELF = Path(__file__).resolve()
-MAX_TEXT_BYTES = 2 * 1024 * 1024
+MAX_TEXT_BYTES = 5 * 1024 * 1024
 
 FORBIDDEN_NAMES = {
     ".env",
@@ -56,14 +56,14 @@ def tracked_files() -> list[Path]:
         return [path for path in ROOT.rglob("*") if path.is_file() and ".git" not in path.parts]
 
 
-def main() -> int:
+def scan_paths(paths: list[Path], root: Path = ROOT) -> list[str]:
     findings: list[str] = []
-    for path in tracked_files():
+    for path in paths:
         if path.resolve() == SELF or not path.exists():
             continue
         lower_name = path.name.lower()
         if lower_name in FORBIDDEN_NAMES or path.suffix.lower() in FORBIDDEN_SUFFIXES:
-            findings.append(f"credential-file: {path.relative_to(ROOT)}")
+            findings.append(f"credential-file: {path.relative_to(root)}")
             continue
         if path.stat().st_size > MAX_TEXT_BYTES:
             continue
@@ -74,7 +74,12 @@ def main() -> int:
         for line_number, line in enumerate(text.splitlines(), start=1):
             for rule, pattern in PATTERNS.items():
                 if pattern.search(line):
-                    findings.append(f"{rule}: {path.relative_to(ROOT)}:{line_number}")
+                    findings.append(f"{rule}: {path.relative_to(root)}:{line_number}")
+    return findings
+
+
+def main() -> int:
+    findings = scan_paths(tracked_files())
 
     if findings:
         print("Potential credentials detected (values redacted):", file=sys.stderr)
@@ -87,4 +92,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

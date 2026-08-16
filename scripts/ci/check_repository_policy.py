@@ -12,7 +12,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 MAX_TRACKED_BYTES = 5 * 1024 * 1024
 PINNED_ACTION = re.compile(r"^[0-9a-f]{40}$")
-USES = re.compile(r"^\s*-?\s*uses:\s*([^@\s]+)@([^\s#]+)", re.MULTILINE)
+USES_LINE = re.compile(
+    r'''^\s*-?\s*(?:uses|"uses"|'uses')\s*:\s*'''
+    r'''(?P<value>"[^"]+"|'[^']+'|[^\s#]+)''',
+    re.MULTILINE,
+)
 
 REQUIRED = {
     ".github/CODEOWNERS",
@@ -44,6 +48,47 @@ def tracked_files() -> list[Path]:
         return [path for path in ROOT.rglob("*") if path.is_file() and ".git" not in path.parts]
 
 
+def action_uses(workflow_text: str) -> list[tuple[str, str]]:
+    uses: list[tuple[str, str]] = []
+    for match in USES_LINE.finditer(workflow_text):
+        value = match.group("value").strip("\"'")
+        action, separator, ref = value.rpartition("@")
+        if not separator:
+            uses.append((value, ""))
+        else:
+            uses.append((action, ref))
+    return uses
+
+
+def check_xcode_source_membership(errors: list[str]) -> None:
+    project_path = ROOT / "DOS.xcodeproj" / "project.pbxproj"
+    if not project_path.is_file():
+        return
+
+    expected_paths = sorted((ROOT / "DOS").rglob("*.swift")) + sorted(
+        (ROOT / "DOSTests").rglob("*.swift")
+    )
+    expected_names = [path.name for path in expected_paths]
+    duplicate_names = sorted(
+        {name for name in expected_names if expected_names.count(name) > 1}
+    )
+    if duplicate_names:
+        errors.append(
+            "Swift filenames must remain unique until the PBX membership check is "
+            f"path-aware: {', '.join(duplicate_names)}"
+        )
+
+    project_text = project_path.read_text(encoding="utf-8")
+    source_names = set(
+        re.findall(r"/\* ([^*/]+\.swift) in Sources \*/", project_text)
+    )
+    missing = sorted(set(expected_names) - source_names)
+    if missing:
+        errors.append(
+            "Swift source lacks Xcode Sources membership: " + ", ".join(missing)
+        )
+
+
 def main() -> int:
     errors: list[str] = []
     for required in sorted(REQUIRED):
@@ -66,7 +111,7 @@ def main() -> int:
                 f"workflow may not suppress failed gates with continue-on-error: "
                 f"{workflow.relative_to(ROOT)}"
             )
-        for action, ref in USES.findall(text):
+        for action, ref in action_uses(text):
             if action.startswith("./"):
                 continue
             if not PINNED_ACTION.fullmatch(ref):
@@ -74,6 +119,8 @@ def main() -> int:
                     f"GitHub Action must be pinned to a 40-character commit: {action}@{ref} "
                     f"in {workflow.relative_to(ROOT)}"
                 )
+
+    check_xcode_source_membership(errors)
 
     production = ROOT / "Configuration" / "Production.xcconfig"
     if production.is_file():

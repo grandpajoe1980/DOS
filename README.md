@@ -130,7 +130,10 @@ Every pull request to `main` runs:
 - foundation script syntax, repository policy, and redacted credential-pattern
   scanning;
 - OpenAPI, JSON Schema, and contract fixture validation when contracts exist;
-- GitHub dependency review, blocking High and Critical findings;
+- GitHub dependency review when the repository dependency graph and
+  `DEPENDENCY_GRAPH_ENABLED=true` Actions variable are configured; until #18
+  is complete, CI emits a visible availability warning and dependency-changing
+  merges remain blocked by policy;
 - SwiftPM tests with compiler warnings treated as errors;
 - iOS simulator tests on `iPhone 16 Pro`;
 - Staging and fail-closed Production simulator builds; and
@@ -139,6 +142,10 @@ Every pull request to `main` runs:
 GitHub Actions are pinned to full commit SHAs. CI checks out without persisting
 credentials and does not consume repository secrets. Scanners report only a
 rule and file location; they do not print matched credential values.
+
+Until PR #12 is integrated, the contract job emits a visible deferral warning.
+After integration, repository variable `CONTRACTS_REQUIRED=true` must be set;
+the validator's absence then fails CI. Issue #22 tracks that one-way gate.
 
 Use `.github/PULL_REQUEST_TEMPLATE.md` to record requirement IDs, exact test
 commands/results, security and privacy impact, compatibility, rollout,

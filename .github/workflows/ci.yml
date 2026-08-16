@@ -29,6 +29,7 @@ jobs:
         run: |
           bash -n scripts/ci/*.sh
           python3 -c 'import ast, pathlib; [ast.parse(path.read_text()) for path in pathlib.Path("scripts/ci").glob("*.py")]'
+          python3 -m unittest discover -s scripts/ci -p 'test_*.py' -v
       - name: Enforce repository policy
         run: python3 scripts/ci/check_repository_policy.py
       - name: Scan tracked files for credentials
@@ -44,6 +45,8 @@ jobs:
         with:
           persist-credentials: false
       - name: Validate OpenAPI, schemas, and fixtures
+        env:
+          CONTRACTS_REQUIRED: ${{ vars.CONTRACTS_REQUIRED }}
         run: bash scripts/ci/validate_contracts.sh
 
   dependency-review:
