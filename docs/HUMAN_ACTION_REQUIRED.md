@@ -36,7 +36,9 @@ The owner will eventually need to establish the legal/account ownership, public 
 2. Review the MIT license and decide whether public redistribution is intended.
 3. In GitHub, open **Settings → General → Danger Zone → Change repository visibility** if the repository should be private. Read GitHub's stated effects before confirming.
 4. In either case, require two-factor authentication for collaborators, use least-privileged repository roles, and enable secret/dependency scanning when #5 adds the automated gates.
-5. Do not commit cloud credentials, Apple signing material, real participant records, real incidents, waiver signatures, precise live location, or private media.
+5. Enable GitHub's dependency graph and applicable Dependabot alerts/security updates, then add repository Actions variable `DEPENDENCY_GRAPH_ENABLED=true`; verify the pinned dependency-review gate runs and rejects a temporary High-severity dependency change as tracked in #18.
+6. Immediately after PR #12 is integrated, add repository Actions variable `CONTRACTS_REQUIRED=true` and prove that deleting the contract validator fails CI as tracked in #22.
+7. Do not commit cloud credentials, Apple signing material, real participant records, real incidents, waiver signatures, precise live location, or private media.
 
 **Return to the team:** `Public/MIT approved` or `Private`; legal product owner name; names/GitHub handles authorized to approve security, release, and policy changes. Do not return credentials.
 

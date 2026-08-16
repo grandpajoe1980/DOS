@@ -8,7 +8,7 @@ Default branch: `main` at `1c2a95286d2d4692b3ebdf47247b0bac0ff44a87`
 
 The project is a documented and unit-tested Swift prototype, not yet a deployable application. `main` contains the complete engineering handoff, iOS discovery/registration UI wired to a preview service, an HTTP client protocol, an offline attendance queue, domain models for authorization/allocation/media/Safety Sharing, and 11 Swift unit tests reported passing in merged PR #4.
 
-The first production boundary is now in draft PR #12: a versioned v1 OpenAPI/realtime contract package with validators and fixtures. It is under review and is not yet authoritative on `main`. The other immediate P0 is issue #5, because the repository has no Xcode project, CI workflow, status checks, contract-compatibility gate, or independent test execution.
+The first production boundary is now hardened in draft PR #12: 60 versioned v1 OpenAPI operations, a redacted realtime schema, 27 official fixtures, a checked compatibility baseline, and an independent 16-test boundary harness. Both contract suites pass, but the package is still under review and is not authoritative on `main`. Draft PR #17 adds the checked-in Xcode project and CI foundation; its SwiftPM, simulator, Staging/Production build, analyzer, policy, secret, and script-regression jobs have executed successfully, while dependency review and the post-contract required switch remain tracked setup gates in #18 and #22.
 
 There is no database, RLS, authentication integration, hosted API, organizer web application, media pipeline, notification provider, deployment configuration, observability stack, or release configuration. No functional requirement is complete end to end.
 
@@ -19,14 +19,14 @@ There is no database, RLS, authentication integration, hosted API, organizer web
 | Product/engineering handoff | `documents/README.md` and `documents/01`–`15`; merged PR #1 | Complete as baseline; living docs still required |
 | Architecture notes | `docs/ARCHITECTURE.md` plus system handoff | Implemented prototype described; current architecture review in progress |
 | Swift package | `Package.swift`, `DOSCore`, three test files | Present on `main` |
-| Native app project | No `DOS.xcodeproj`, asset catalog, schemes, or environment configuration | Missing; #5 ready |
-| CI / required checks | No `.github/workflows/**`; no checks on `main` | Missing; release blocker |
-| Shared contracts | Draft PR #12 on `agent/define-v1-contracts`; OpenAPI, realtime schema, fixtures, validator, ADR | Under review; #6 not complete |
+| Native app project | Draft PR #17 adds `DOS.xcodeproj`, a shared scheme, and fail-closed Debug/Staging/Production configuration | Under review; not on `main` |
+| CI / required checks | Draft PR #17 adds pinned PR checks and executed SwiftPM/simulator/build/analyzer/policy evidence | Under review; #18 and #22 remain mandatory setup gates |
+| Shared contracts | Draft PR #12 on `agent/define-v1-contracts`; 60 operations, realtime schema, 27 fixtures, compatibility baseline, validator, ADR | Independent contract gate green; cross-discipline review still required |
 | Backend | No `supabase/**`, migrations, functions, seed, or RLS tests | Missing; #7 blocked on accepted contract/CI |
 | iOS runtime integration | Preview service is the default; no auth, secure storage, environment selection, realtime, or production cache | Prototype only; #8 blocked |
 | Web | No `web/**` or web-stack ADR on `main` | Missing; #9 blocked |
 | Identity/tenancy | Swift advisory authorization helper only | Server enforcement absent; #10 blocked |
-| Independent quality harness | Unit tests only; no contract/integration/security/performance/UI test implementation | Missing; #11 can start with #5/#6 |
+| Independent quality harness | Draft PR #12 adds 16 contract/repository-hygiene tests; all contract assertions pass and the preview-service check intentionally fails against current app source | Partial; database, integration, accessibility, performance, and UI coverage remain |
 | Repository visibility | GitHub reports `public`; MIT license on `main` | Owner review required before operational/configuration material |
 
 ## Implemented prototype capabilities
@@ -61,18 +61,25 @@ The detailed mapping, planned implementation, and required tests are in `docs/PR
 | Issue / PR | Scope | Dependencies | Current state | Next gate |
 |---|---|---|---|---|
 | #3 | v0.1 orchestration board | None | In progress | Keep child state, dependencies, and evidence current |
-| #5 | Xcode project, CI, repository quality gates | None | Ready | Assign platform owner; require SwiftPM, simulator, contract, secret/dependency/static checks |
-| #6 / draft PR #12 | Versioned v1 schema/API/realtime contracts and fixtures | None | Under review | Database/security, iOS, web, and quality review; CI validation; compatibility evidence; reconcile PG-001 member-feed/report-hide/public-gallery semantics; mark ADR accepted |
+| #5 / draft PR #17 | Xcode project, CI, repository quality gates | None | Under review; executed build/test/analyze evidence green | Complete #18/#22 sequencing, keep dependency-changing merges blocked, and review latest gate-hardening run |
+| #6 / draft PR #12 | Versioned v1 schema/API/realtime contracts and fixtures | None | Independent gate green; architecture/client/data acceptance pending | Integrate #17 checks, resolve #23/#24 for affected later slices, and record ADR/cross-discipline acceptance |
 | #7 | Supabase/PostGIS schema, migrations, RLS, seed, functions/tests | Accepted relevant #6 contract; #5 runner | Blocked (design can begin) | Produce contract-to-table/policy/RLS map, then implement after contract acceptance |
 | #8 | Deployable iOS application shell | #5 and accepted #6 | Blocked (design can begin) | Define fixture/type mapping, DI, secure cache/token, navigation/flag and UI test plan |
 | #9 | Web-stack ADR and public/organizer scaffold | #5 and accepted #6 | Blocked (ADR can begin) | Accept ADR, then scaffold shared-fixture routes/build/accessibility checks |
 | #10 | Authentication, profiles, organizations, roles | #5, #6, and tenant controls from #7 | Blocked | Prepare provider/env documentation; implement only on server-derived roles and RLS |
-| #11 | Independent contract/RLS/offline/accessibility/security harnesses | #5; grows with #6–#10 | Ready to start planning/skeleton | Add negative matrix, known-defect proofs, commands, duration, ownership, flaky-test policy |
+| #11 | Independent contract/RLS/offline/accessibility/security harnesses | #5; grows with #6–#10 | Contract/repository slice implemented in PR #12 | Extend to RLS, offline, accessibility, performance, and UI as #7–#10 land |
+| #13 / draft PR #16 | Living product, architecture, delivery, quality, security, release, and authorization-map docs | None | Under review | Accept proposed ADRs and keep status/traceability current |
+| #18 | Enable dependency graph and blocking dependency review | Repository administrator | Human setup required | Enable graph/variable, prove High dependency rejection, remove fallback |
+| #22 | Make contract validator absence fail after PR #12 | PR #12 integrated | Sequenced human setup | Set `CONTRACTS_REQUIRED=true`, prove deletion failure, remove deferral later |
+| #23 | Personal-export job tenant semantics | Contract/privacy decision | Blocking only affected export slice | Choose actor-scoped or tenant-scoped model and update contract/map/tests |
+| #24 | Public-gallery subject/guardian clearance | Contract/privacy/legal policy | Blocking anonymous gallery only | Define enforceable clearance/withdrawal model without changing member-feed behavior |
 
 ## Pull requests and branches
 
 - PR #1, #2, and #4 are merged into `main`.
-- Draft PR #12 is the only observed open PR and is mergeable at the snapshot, but its required cross-discipline reviews and CI gate are not yet evidenced.
+- Draft PR #12 contains the hardened v1 contract and independent boundary harness; both local suites are green, but cross-discipline acceptance and integrated CI are still required.
+- Draft PR #16 contains the living documentation, ADRs, and all-60-operation data/authorization map.
+- Draft PR #17 contains the Xcode/CI foundation and has executed SwiftPM, simulator, Staging/Production build, analyzer, policy, secret, and quality-script checks successfully; #18/#22 are explicit sequencing gaps.
 - `agent/define-v1-contracts` contains PR #12 work.
 - The three earlier `codex/*` branches contain no work ahead of `main` and are historical.
 
@@ -81,7 +88,7 @@ The detailed mapping, planned implementation, and required tests are in `docs/PR
 - Merged PR #4 reported `swift test` passing all 11 tests: four registration-validator tests, two offline-queue tests, and five documented-feature model tests.
 - Current unit coverage proves selected pure/local behavior only. It does not prove database authorization, tenant isolation, live API compatibility, secure offline storage, UI accessibility, web behavior, concurrency under authoritative persistence, uploads, notifications, or release readiness.
 - There is no repository CI to rerun those tests on each change, and no checked-in Xcode project to execute simulator/UI tests.
-- Draft PR #12 reports its local validator passed OpenAPI, realtime schema, and listed fixture checks. This evidence must be reproduced by #5 CI and expanded by #11 compatibility/negative tests before acceptance.
+- Draft PR #12's official validator passes 60 operations and 27 fixtures; its independent suite passes all 16 contract/repository assertions when app-source-only checks are skipped. Against current `main`, the preview-service reachability assertion fails as intended and blocks release under #8.
 
 ## Highest risks and gaps
 
