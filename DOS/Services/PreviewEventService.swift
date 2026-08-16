@@ -1,3 +1,4 @@
+#if DEBUG
 import Foundation
 
 public actor PreviewEventService: EventServing {
@@ -22,3 +23,15 @@ public actor PreviewEventService: EventServing {
 
     public func recordAttendance(_ operation: AttendanceOperation) async throws {}
 }
+
+public extension AppDependencies {
+    static func preview() -> Self {
+        Self(
+            service: PreviewEventService(),
+            selection: .preview,
+            organizationSlug: "community-action",
+            requiredDocumentIDs: [PreviewEventService.waiverID]
+        )
+    }
+}
+#endif

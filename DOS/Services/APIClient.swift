@@ -22,6 +22,94 @@ public protocol EventServing: Sendable {
     func recordAttendance(_ operation: AttendanceOperation) async throws
 }
 
+public enum AppEnvironment: String, Equatable, Sendable {
+    case debug, staging, production
+}
+
+public enum AppRuntimeConfigurationError: Error, LocalizedError, Equatable, Sendable {
+    case missingEnvironment
+    case unsupportedEnvironment
+    case missingAPIScheme
+    case insecureAPIScheme
+    case missingAPIHost
+    case placeholderAPIHost
+    case invalidAPIURL
+
+    public var errorDescription: String? {
+        switch self {
+        case .missingEnvironment: "The app environment is not configured."
+        case .unsupportedEnvironment: "The app environment is not supported."
+        case .missingAPIScheme, .missingAPIHost: "The service address is not configured."
+        case .insecureAPIScheme: "The service address must use a secure connection."
+        case .placeholderAPIHost: "The service address is still a placeholder."
+        case .invalidAPIURL: "The service address is invalid."
+        }
+    }
+}
+
+public struct AppRuntimeConfiguration: Equatable, Sendable {
+    public let environment: AppEnvironment
+    public let apiBaseURL: URL
+
+    public init(environment: String?, apiScheme: String?, apiHost: String?) throws {
+        let environmentValue = environment?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() ?? ""
+        guard !environmentValue.isEmpty else { throw AppRuntimeConfigurationError.missingEnvironment }
+        guard let environment = AppEnvironment(rawValue: environmentValue) else { throw AppRuntimeConfigurationError.unsupportedEnvironment }
+
+        let scheme = apiScheme?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() ?? ""
+        guard !scheme.isEmpty else { throw AppRuntimeConfigurationError.missingAPIScheme }
+        guard scheme == "https" else { throw AppRuntimeConfigurationError.insecureAPIScheme }
+
+        let host = apiHost?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() ?? ""
+        guard !host.isEmpty else { throw AppRuntimeConfigurationError.missingAPIHost }
+        guard host != "invalid", !host.hasSuffix(".invalid") else { throw AppRuntimeConfigurationError.placeholderAPIHost }
+        guard !host.contains(where: { "/?#@".contains($0) }) else { throw AppRuntimeConfigurationError.invalidAPIURL }
+
+        var components = URLComponents()
+        components.scheme = scheme
+        components.host = host
+        guard let url = components.url, url.host == host else { throw AppRuntimeConfigurationError.invalidAPIURL }
+        self.environment = environment
+        self.apiBaseURL = url
+    }
+
+    public init(bundle: Bundle) throws {
+        try self.init(
+            environment: bundle.object(forInfoDictionaryKey: "DOSAppEnvironment") as? String,
+            apiScheme: bundle.object(forInfoDictionaryKey: "DOSAPIScheme") as? String,
+            apiHost: bundle.object(forInfoDictionaryKey: "DOSAPIHost") as? String
+        )
+    }
+}
+
+public enum AppServiceSelection: Equatable, Sendable {
+    case preview
+    case live(baseURL: URL)
+}
+
+public struct AppDependencies: Sendable {
+    public let service: any EventServing
+    public let selection: AppServiceSelection
+    public let organizationSlug: String
+    public let requiredDocumentIDs: Set<UUID>
+
+    public init(service: any EventServing, selection: AppServiceSelection, organizationSlug: String, requiredDocumentIDs: Set<UUID>) {
+        self.service = service
+        self.selection = selection
+        self.organizationSlug = organizationSlug
+        self.requiredDocumentIDs = requiredDocumentIDs
+    }
+
+    public static func live(configuration: AppRuntimeConfiguration, session: URLSession = .shared) -> Self {
+        Self(
+            service: APIClient(baseURL: configuration.apiBaseURL, session: session),
+            selection: .live(baseURL: configuration.apiBaseURL),
+            organizationSlug: "community-action",
+            requiredDocumentIDs: []
+        )
+    }
+}
+
 public struct APIClient: EventServing, Sendable {
     private let baseURL: URL
     private let session: URLSession

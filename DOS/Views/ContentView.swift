@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var model = AppModel()
+    @ObservedObject var model: AppModel
 
     var body: some View {
         TabView {
@@ -104,7 +104,7 @@ private struct RegistrationView: View {
             }
         }.navigationTitle("Register").navigationBarTitleDisplayMode(.inline)
     }
-    private var request: RegistrationRequest { RegistrationRequest(occurrenceID: occurrence.id, siteID: occurrence.sites.first?.id, participantNames: [name], teamMode: teamMode, accommodations: accommodation.isEmpty ? nil : accommodation, acceptedDocumentIDs: accepted ? [PreviewEventService.waiverID] : []) }
+    private var request: RegistrationRequest { RegistrationRequest(occurrenceID: occurrence.id, siteID: occurrence.sites.first?.id, participantNames: [name], teamMode: teamMode, accommodations: accommodation.isEmpty ? nil : accommodation, acceptedDocumentIDs: accepted ? Array(model.requiredDocumentIDs) : []) }
 }
 
 private struct MyDayView: View {
@@ -116,4 +116,6 @@ private struct ProfileView: View {
     var body: some View { List { Section("Your account") { Label("Sign in to save registrations", systemImage: "person.badge.key"); Label("Accessibility preferences", systemImage: "accessibility") }; Section("Privacy & support") { Label("Privacy choices", systemImage: "hand.raised"); Label("Get help", systemImage: "questionmark.circle"); Label("Request account deletion", systemImage: "trash") } }.navigationTitle("Profile") }
 }
 
-#Preview { ContentView() }
+#if DEBUG
+#Preview { ContentView(model: AppModel(dependencies: .preview())) }
+#endif
