@@ -1,0 +1,32 @@
+{
+  "data": [
+    {
+      "id": "10000000-0000-4000-8000-000000000001",
+      "organization_id": "20000000-0000-4000-8000-000000000001",
+      "title": "Community Day of Service",
+      "summary": "Volunteer projects across the community.",
+      "starts_at": "2027-01-16T15:00:00Z",
+      "ends_at": "2027-01-16T21:00:00Z",
+      "time_zone": "America/Chicago",
+      "state": "published",
+      "version": 4,
+      "sites": [
+        {
+          "id": "30000000-0000-4000-8000-000000000001",
+          "organization_id": "20000000-0000-4000-8000-000000000001",
+          "name": "North Community Center",
+          "public_location": "North Baton Rouge area",
+          "approximate_location": {
+            "latitude": 30.491,
+            "longitude": -91.151,
+            "precision": "approximate"
+          },
+          "accessibility": ["step_free_entry"],
+          "arrival_notes": "Exact arrival instructions are provided after assignment.",
+          "soft_target": 50
+        }
+      ]
+    }
+  ],
+  "next_cursor": null
+}

@@ -1,0 +1,34 @@
+{
+  "fixtures": [
+    {
+      "path": "public-occurrences.valid.json",
+      "schema": {"openapi_pointer": "#/components/schemas/PublicOccurrencePage"},
+      "valid": true
+    },
+    {
+      "path": "registration-create.valid.json",
+      "schema": {"openapi_pointer": "#/components/schemas/RegistrationCreate"},
+      "valid": true
+    },
+    {
+      "path": "registration-create.invalid-missing-participants.json",
+      "schema": {"openapi_pointer": "#/components/schemas/RegistrationCreate"},
+      "valid": false
+    },
+    {
+      "path": "error-conflict.valid.json",
+      "schema": {"openapi_pointer": "#/components/schemas/ErrorEnvelope"},
+      "valid": true
+    },
+    {
+      "path": "realtime-event.valid.json",
+      "schema": {"file": "schemas/realtime-event.schema.json"},
+      "valid": true
+    },
+    {
+      "path": "realtime-event.invalid-sensitive.json",
+      "schema": {"file": "schemas/realtime-event.schema.json"},
+      "valid": false
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "occurrence_id": "10000000-0000-4000-8000-000000000001",
+  "preferred_site_id": "30000000-0000-4000-8000-000000000001",
+  "team_mode": "must_stay_together",
+  "participants": [
+    {
+      "profile_id": "40000000-0000-4000-8000-000000000001",
+      "display_name": "Alex Volunteer"
+    },
+    {
+      "dependent_id": "50000000-0000-4000-8000-000000000001",
+      "display_name": "Minor Dependent"
+    }
+  ],
+  "accommodations": "Wheelchair-accessible work area requested.",
+  "expected_occurrence_version": 4
+}

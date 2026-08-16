@@ -1,0 +1,1382 @@
+openapi: 3.1.0
+info:
+  title: Day of Service API
+  version: 1.0.0-draft.1
+  description: >-
+    Versioned policy boundary for the Day of Service iOS app, public web
+    experience, organizer console, and integration workers. PostgreSQL is the
+    source of truth. Tenant scope is derived and enforced by the server.
+servers:
+  - url: https://api.staging.dayofservice.example
+    description: Staging placeholder; deployment configuration supplies the real URL.
+security:
+  - bearerAuth: []
+tags:
+  - name: identity
+  - name: organizations
+  - name: events
+  - name: registration
+  - name: operations
+  - name: media
+  - name: exports
+paths:
+  /v1/me:
+    get:
+      tags: [identity]
+      operationId: getMyProfile
+      responses:
+        "200":
+          description: Authenticated profile.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Profile"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+    patch:
+      tags: [identity]
+      operationId: updateMyProfile
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/ProfileUpdate"}
+      responses:
+        "200":
+          description: Canonical updated profile.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Profile"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "409": {$ref: "#/components/responses/Conflict"}
+        "422": {$ref: "#/components/responses/ValidationError"}
+  /v1/organizations:
+    post:
+      tags: [organizations]
+      operationId: createOrganization
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/OrganizationCreate"}
+      responses:
+        "201":
+          description: Organization and owner membership.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Organization"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "409": {$ref: "#/components/responses/Conflict"}
+        "422": {$ref: "#/components/responses/ValidationError"}
+  /v1/organizations/{organization_id}/invitations:
+    parameters:
+      - {$ref: "#/components/parameters/OrganizationId"}
+    post:
+      tags: [organizations]
+      operationId: createOrganizationInvitation
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/InvitationCreate"}
+      responses:
+        "201":
+          description: Single-use invitation metadata. The token is delivered out of band.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/OrganizationInvitation"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "409": {$ref: "#/components/responses/Conflict"}
+        "422": {$ref: "#/components/responses/ValidationError"}
+  /v1/organizations/{organization_id}/event-definitions:
+    parameters:
+      - {$ref: "#/components/parameters/OrganizationId"}
+    post:
+      tags: [events]
+      operationId: createEventDefinition
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/EventDefinitionCreate"}
+      responses:
+        "201":
+          description: Canonical reusable event definition.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/EventDefinition"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "422": {$ref: "#/components/responses/ValidationError"}
+  /v1/event-definitions/{event_definition_id}/occurrences:
+    parameters:
+      - {$ref: "#/components/parameters/EventDefinitionId"}
+    post:
+      tags: [events]
+      operationId: createEventOccurrence
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/EventOccurrenceCreate"}
+      responses:
+        "201":
+          description: Draft occurrence with sites, shifts, and tasks.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/EventOccurrence"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "409": {$ref: "#/components/responses/Conflict"}
+        "422": {$ref: "#/components/responses/ValidationError"}
+  /v1/public/organizations/{slug}/occurrences:
+    parameters:
+      - name: slug
+        in: path
+        required: true
+        schema: {$ref: "#/components/schemas/Slug"}
+      - {$ref: "#/components/parameters/Cursor"}
+      - {$ref: "#/components/parameters/Limit"}
+    get:
+      tags: [events]
+      operationId: listPublicOccurrences
+      security: []
+      responses:
+        "200":
+          description: Published occurrences with non-sensitive site summaries.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/PublicOccurrencePage"}
+        "404": {$ref: "#/components/responses/NotFound"}
+  /v1/public/occurrences/{occurrence_id}:
+    parameters:
+      - {$ref: "#/components/parameters/OccurrenceId"}
+    get:
+      tags: [events]
+      operationId: getPublicOccurrence
+      security: []
+      responses:
+        "200":
+          description: Published occurrence detail.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/PublicOccurrence"}
+        "404": {$ref: "#/components/responses/NotFound"}
+  /v1/registrations:
+    post:
+      tags: [registration]
+      operationId: createRegistration
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/RegistrationCreate"}
+      responses:
+        "201":
+          description: Canonical draft registration.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Registration"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "409": {$ref: "#/components/responses/Conflict"}
+        "422": {$ref: "#/components/responses/ValidationError"}
+  /v1/registrations/{registration_id}:
+    parameters:
+      - {$ref: "#/components/parameters/RegistrationId"}
+    patch:
+      tags: [registration]
+      operationId: updateRegistration
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/RegistrationUpdate"}
+      responses:
+        "200":
+          description: Canonical updated draft registration.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Registration"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "409": {$ref: "#/components/responses/Conflict"}
+        "422": {$ref: "#/components/responses/ValidationError"}
+  /v1/registrations/{registration_id}/submit:
+    parameters:
+      - {$ref: "#/components/parameters/RegistrationId"}
+    post:
+      tags: [registration]
+      operationId: submitRegistration
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/VersionExpectation"}
+      responses:
+        "200":
+          description: Submitted, waitlisted, or assigned canonical registration.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Registration"}
+        "409": {$ref: "#/components/responses/Conflict"}
+        "422": {$ref: "#/components/responses/ValidationError"}
+  /v1/consents:
+    post:
+      tags: [registration]
+      operationId: createConsent
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/ConsentCreate"}
+      responses:
+        "201":
+          description: Immutable consent evidence summary.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ConsentEvidence"}
+        "409": {$ref: "#/components/responses/Conflict"}
+        "422": {$ref: "#/components/responses/ValidationError"}
+  /v1/guardian-consents:
+    post:
+      tags: [registration]
+      operationId: createGuardianConsent
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/GuardianConsentCreate"}
+      responses:
+        "201":
+          description: Immutable guardian consent evidence summary.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ConsentEvidence"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "409": {$ref: "#/components/responses/Conflict"}
+        "422": {$ref: "#/components/responses/ValidationError"}
+  /v1/assignments/plan:
+    post:
+      tags: [registration]
+      operationId: planAssignments
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/AssignmentPlanRequest"}
+      responses:
+        "200":
+          description: Non-committing planner result.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AssignmentPlan"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "409": {$ref: "#/components/responses/Conflict"}
+  /v1/assignments/{assignment_id}/confirm:
+    parameters:
+      - {$ref: "#/components/parameters/AssignmentId"}
+    post:
+      tags: [registration]
+      operationId: confirmAssignment
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/VersionExpectation"}
+      responses:
+        "200":
+          description: Canonical confirmed assignment.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Assignment"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "409": {$ref: "#/components/responses/Conflict"}
+  /v1/attendance-events:
+    post:
+      tags: [operations]
+      operationId: createAttendanceEvent
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/AttendanceEventCreate"}
+      responses:
+        "201":
+          description: Canonical attendance transition; retries return the first result.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AttendanceEvent"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "409": {$ref: "#/components/responses/Conflict"}
+        "422": {$ref: "#/components/responses/ValidationError"}
+  /v1/announcements:
+    post:
+      tags: [operations]
+      operationId: createAnnouncement
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/AnnouncementCreate"}
+      responses:
+        "202":
+          description: Announcement accepted for outbox delivery.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Announcement"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "422": {$ref: "#/components/responses/ValidationError"}
+  /v1/incidents:
+    post:
+      tags: [operations]
+      operationId: createIncident
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/IncidentCreate"}
+      responses:
+        "201":
+          description: Restricted incident reference; sensitive text is not echoed.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/IncidentReference"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "422": {$ref: "#/components/responses/ValidationError"}
+  /v1/safety-shares:
+    post:
+      tags: [operations]
+      operationId: createSafetyShare
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/SafetyShareCreate"}
+      responses:
+        "201":
+          description: Active expiring share without precise coordinates.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SafetyShare"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "422": {$ref: "#/components/responses/ValidationError"}
+  /v1/safety-shares/{safety_share_id}/locations:
+    parameters:
+      - {$ref: "#/components/parameters/SafetyShareId"}
+    post:
+      tags: [operations]
+      operationId: updateSafetyShareLocation
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/SafetyLocationSample"}
+      responses:
+        "202":
+          description: Encrypted, access-scoped location sample accepted.
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "409": {$ref: "#/components/responses/Conflict"}
+        "422": {$ref: "#/components/responses/ValidationError"}
+  /v1/safety-shares/{safety_share_id}:
+    parameters:
+      - {$ref: "#/components/parameters/SafetyShareId"}
+    delete:
+      tags: [operations]
+      operationId: stopSafetyShare
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      responses:
+        "204":
+          description: Sharing stopped; repeated requests are successful.
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/NotFound"}
+  /v1/media/uploads:
+    post:
+      tags: [media]
+      operationId: createMediaUpload
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/MediaUploadRequest"}
+      responses:
+        "201":
+          description: Short-lived private upload authorization. No storage key is exposed.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MediaUploadAuthorization"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "422": {$ref: "#/components/responses/ValidationError"}
+  /v1/media/{media_id}/complete:
+    parameters:
+      - {$ref: "#/components/parameters/MediaId"}
+    post:
+      tags: [media]
+      operationId: completeMediaUpload
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/MediaCompletion"}
+      responses:
+        "202":
+          description: Media accepted for scanning and transformation.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MediaAsset"}
+        "409": {$ref: "#/components/responses/Conflict"}
+        "422": {$ref: "#/components/responses/ValidationError"}
+  /v1/media/{media_id}/moderation-actions:
+    parameters:
+      - {$ref: "#/components/parameters/MediaId"}
+    post:
+      tags: [media]
+      operationId: createMediaModerationAction
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/MediaModerationActionCreate"}
+      responses:
+        "200":
+          description: Canonical media state after moderation.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MediaAsset"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "409": {$ref: "#/components/responses/Conflict"}
+        "422": {$ref: "#/components/responses/ValidationError"}
+  /v1/media/{media_id}/reports:
+    parameters:
+      - {$ref: "#/components/parameters/MediaId"}
+    post:
+      tags: [media]
+      operationId: createMediaReport
+      security: []
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/MediaReportCreate"}
+      responses:
+        "202":
+          description: Report accepted; publication may be suspended immediately.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ReportReceipt"}
+        "404": {$ref: "#/components/responses/NotFound"}
+        "422": {$ref: "#/components/responses/ValidationError"}
+  /v1/exports:
+    post:
+      tags: [exports]
+      operationId: createExport
+      parameters:
+        - {$ref: "#/components/parameters/IdempotencyKey"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/ExportRequest"}
+      responses:
+        "202":
+          description: Privacy-filtered export job.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Job"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "422": {$ref: "#/components/responses/ValidationError"}
+  /v1/jobs/{job_id}:
+    parameters:
+      - {$ref: "#/components/parameters/JobId"}
+    get:
+      tags: [exports]
+      operationId: getJob
+      responses:
+        "200":
+          description: Job status and short-lived result URL when complete.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Job"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/NotFound"}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: >-
+        Stable client operation ID. Reuse with the same payload returns the
+        first result; reuse with a different payload returns 409.
+      schema:
+        type: string
+        minLength: 16
+        maxLength: 255
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      schema: {type: string, maxLength: 512}
+    Limit:
+      name: limit
+      in: query
+      required: false
+      schema: {type: integer, minimum: 1, maximum: 100, default: 25}
+    OrganizationId:
+      name: organization_id
+      in: path
+      required: true
+      schema: {$ref: "#/components/schemas/UUID"}
+    EventDefinitionId:
+      name: event_definition_id
+      in: path
+      required: true
+      schema: {$ref: "#/components/schemas/UUID"}
+    OccurrenceId:
+      name: occurrence_id
+      in: path
+      required: true
+      schema: {$ref: "#/components/schemas/UUID"}
+    RegistrationId:
+      name: registration_id
+      in: path
+      required: true
+      schema: {$ref: "#/components/schemas/UUID"}
+    AssignmentId:
+      name: assignment_id
+      in: path
+      required: true
+      schema: {$ref: "#/components/schemas/UUID"}
+    SafetyShareId:
+      name: safety_share_id
+      in: path
+      required: true
+      schema: {$ref: "#/components/schemas/UUID"}
+    MediaId:
+      name: media_id
+      in: path
+      required: true
+      schema: {$ref: "#/components/schemas/UUID"}
+    JobId:
+      name: job_id
+      in: path
+      required: true
+      schema: {$ref: "#/components/schemas/UUID"}
+  responses:
+    Unauthorized:
+      description: Authentication is absent or expired.
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/ErrorEnvelope"}
+    Forbidden:
+      description: Authenticated actor lacks tenant, role, state, or assignment scope.
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/ErrorEnvelope"}
+    NotFound:
+      description: Resource is absent or intentionally hidden from this actor.
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/ErrorEnvelope"}
+    Conflict:
+      description: Version, state, capacity, or idempotency conflict.
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/ErrorEnvelope"}
+    ValidationError:
+      description: Safe field-level validation failure.
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/ErrorEnvelope"}
+  schemas:
+    UUID:
+      type: string
+      format: uuid
+    Timestamp:
+      type: string
+      format: date-time
+    Slug:
+      type: string
+      pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      minLength: 3
+      maxLength: 80
+    Version:
+      type: integer
+      minimum: 1
+    VersionExpectation:
+      type: object
+      additionalProperties: false
+      required: [expected_version]
+      properties:
+        expected_version: {$ref: "#/components/schemas/Version"}
+    FieldError:
+      type: object
+      additionalProperties: false
+      required: [pointer, code, message]
+      properties:
+        pointer: {type: string, pattern: "^/"}
+        code: {type: string, pattern: "^[a-z][a-z0-9_]*$"}
+        message: {type: string, minLength: 1, maxLength: 240}
+    Error:
+      type: object
+      additionalProperties: false
+      required: [code, message, request_id, retryable, field_errors]
+      properties:
+        code: {type: string, pattern: "^[a-z][a-z0-9_]*$"}
+        message: {type: string, minLength: 1, maxLength: 500}
+        request_id: {type: string, minLength: 8, maxLength: 128}
+        retryable: {type: boolean}
+        field_errors:
+          type: array
+          maxItems: 50
+          items: {$ref: "#/components/schemas/FieldError"}
+    ErrorEnvelope:
+      type: object
+      additionalProperties: false
+      required: [error]
+      properties:
+        error: {$ref: "#/components/schemas/Error"}
+    Profile:
+      type: object
+      required: [id, display_name, locale, time_zone, version]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        display_name: {type: string, minLength: 1, maxLength: 120}
+        locale: {type: string, minLength: 2, maxLength: 35}
+        time_zone: {type: string, minLength: 1, maxLength: 64}
+        accessibility_preferences:
+          type: array
+          maxItems: 30
+          items: {type: string, maxLength: 80}
+        version: {$ref: "#/components/schemas/Version"}
+    ProfileUpdate:
+      type: object
+      additionalProperties: false
+      required: [expected_version]
+      minProperties: 2
+      properties:
+        display_name: {type: string, minLength: 1, maxLength: 120}
+        locale: {type: string, minLength: 2, maxLength: 35}
+        time_zone: {type: string, minLength: 1, maxLength: 64}
+        accessibility_preferences:
+          type: array
+          maxItems: 30
+          items: {type: string, maxLength: 80}
+        expected_version: {$ref: "#/components/schemas/Version"}
+    OrganizationRole:
+      type: string
+      enum: [org_owner, organizer, media_moderator, site_lead]
+    OrganizationCreate:
+      type: object
+      additionalProperties: false
+      required: [legal_name, display_name, slug, time_zone, support_url, privacy_url]
+      properties:
+        legal_name: {type: string, minLength: 1, maxLength: 200}
+        display_name: {type: string, minLength: 1, maxLength: 120}
+        slug: {$ref: "#/components/schemas/Slug"}
+        time_zone: {type: string, minLength: 1, maxLength: 64}
+        support_url: {type: string, format: uri, maxLength: 2048}
+        privacy_url: {type: string, format: uri, maxLength: 2048}
+    Organization:
+      type: object
+      required: [id, legal_name, display_name, slug, time_zone, owner_membership, version]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        legal_name: {type: string}
+        display_name: {type: string}
+        slug: {$ref: "#/components/schemas/Slug"}
+        time_zone: {type: string}
+        owner_membership: {$ref: "#/components/schemas/OrganizationMembership"}
+        version: {$ref: "#/components/schemas/Version"}
+    OrganizationMembership:
+      type: object
+      required: [id, organization_id, profile_id, roles, state, version]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        organization_id: {$ref: "#/components/schemas/UUID"}
+        profile_id: {$ref: "#/components/schemas/UUID"}
+        roles:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items: {$ref: "#/components/schemas/OrganizationRole"}
+        state: {type: string, x-known-values: [active, suspended, removed]}
+        version: {$ref: "#/components/schemas/Version"}
+    InvitationCreate:
+      type: object
+      additionalProperties: false
+      required: [email, roles, expires_at]
+      properties:
+        email: {type: string, format: email, maxLength: 320}
+        roles:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items: {$ref: "#/components/schemas/OrganizationRole"}
+        assigned_site_ids:
+          type: array
+          maxItems: 100
+          uniqueItems: true
+          items: {$ref: "#/components/schemas/UUID"}
+        expires_at: {$ref: "#/components/schemas/Timestamp"}
+    OrganizationInvitation:
+      type: object
+      required: [id, organization_id, email_hint, roles, expires_at, state, version]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        organization_id: {$ref: "#/components/schemas/UUID"}
+        email_hint: {type: string, maxLength: 320}
+        roles:
+          type: array
+          items: {$ref: "#/components/schemas/OrganizationRole"}
+        expires_at: {$ref: "#/components/schemas/Timestamp"}
+        state: {type: string, x-known-values: [pending, accepted, expired, revoked]}
+        version: {$ref: "#/components/schemas/Version"}
+    EventDefinitionCreate:
+      type: object
+      additionalProperties: false
+      required: [title, description, eligibility, registration_policy]
+      properties:
+        title: {type: string, minLength: 1, maxLength: 160}
+        description: {type: string, minLength: 1, maxLength: 10000}
+        eligibility: {type: string, minLength: 1, maxLength: 2000}
+        default_legal_document_id:
+          oneOf:
+            - {$ref: "#/components/schemas/UUID"}
+            - {type: "null"}
+        registration_policy:
+          type: object
+          additionalProperties: false
+          required: [allow_teams, allow_dependents]
+          properties:
+            allow_teams: {type: boolean}
+            allow_dependents: {type: boolean}
+    EventDefinition:
+      allOf:
+        - {$ref: "#/components/schemas/EventDefinitionCreate"}
+        - type: object
+          required: [id, organization_id, version]
+          properties:
+            id: {$ref: "#/components/schemas/UUID"}
+            organization_id: {$ref: "#/components/schemas/UUID"}
+            version: {$ref: "#/components/schemas/Version"}
+    ServiceTaskCreate:
+      type: object
+      additionalProperties: false
+      required: [title, description, minimum_age]
+      properties:
+        title: {type: string, minLength: 1, maxLength: 160}
+        description: {type: string, minLength: 1, maxLength: 4000}
+        minimum_age: {type: integer, minimum: 0, maximum: 120}
+        accessibility_tags:
+          type: array
+          maxItems: 30
+          items: {type: string, maxLength: 80}
+    ShiftCreate:
+      type: object
+      additionalProperties: false
+      required: [starts_at, ends_at, tasks]
+      properties:
+        starts_at: {$ref: "#/components/schemas/Timestamp"}
+        ends_at: {$ref: "#/components/schemas/Timestamp"}
+        tasks:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items: {$ref: "#/components/schemas/ServiceTaskCreate"}
+    SiteCreate:
+      type: object
+      additionalProperties: false
+      required:
+        [name, public_location, precise_operations_address, accessibility,
+         arrival_notes, soft_target, shifts]
+      properties:
+        name: {type: string, minLength: 1, maxLength: 160}
+        public_location: {type: string, minLength: 1, maxLength: 240}
+        precise_operations_address: {type: string, minLength: 1, maxLength: 500}
+        accessibility:
+          type: array
+          maxItems: 40
+          items: {type: string, maxLength: 80}
+        arrival_notes: {type: string, maxLength: 4000}
+        soft_target: {type: integer, minimum: 0}
+        hard_safety_limit:
+          oneOf:
+            - {type: integer, minimum: 1}
+            - {type: "null"}
+        shifts:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items: {$ref: "#/components/schemas/ShiftCreate"}
+    EventOccurrenceCreate:
+      type: object
+      additionalProperties: false
+      required:
+        [starts_at, ends_at, time_zone, registration_opens_at,
+         registration_closes_at, public_summary, sites]
+      properties:
+        starts_at: {$ref: "#/components/schemas/Timestamp"}
+        ends_at: {$ref: "#/components/schemas/Timestamp"}
+        time_zone: {type: string, minLength: 1, maxLength: 64}
+        registration_opens_at: {$ref: "#/components/schemas/Timestamp"}
+        registration_closes_at: {$ref: "#/components/schemas/Timestamp"}
+        public_summary: {type: string, minLength: 1, maxLength: 4000}
+        sites:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items: {$ref: "#/components/schemas/SiteCreate"}
+    ApproximateLocation:
+      type: object
+      additionalProperties: false
+      required: [latitude, longitude, precision]
+      properties:
+        latitude: {type: number, minimum: -90, maximum: 90}
+        longitude: {type: number, minimum: -180, maximum: 180}
+        precision: {type: string, enum: [approximate, site_centroid, withheld]}
+    PublicSite:
+      type: object
+      required:
+        [id, organization_id, name, public_location, accessibility,
+         arrival_notes, soft_target]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        organization_id: {$ref: "#/components/schemas/UUID"}
+        name: {type: string}
+        public_location: {type: string}
+        approximate_location: {$ref: "#/components/schemas/ApproximateLocation"}
+        accessibility:
+          type: array
+          items: {type: string}
+        arrival_notes: {type: string}
+        soft_target: {type: integer, minimum: 0}
+    PublicOccurrence:
+      type: object
+      required:
+        [id, organization_id, title, summary, starts_at, ends_at, time_zone,
+         state, version, sites]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        organization_id: {$ref: "#/components/schemas/UUID"}
+        title: {type: string}
+        summary: {type: string}
+        starts_at: {$ref: "#/components/schemas/Timestamp"}
+        ends_at: {$ref: "#/components/schemas/Timestamp"}
+        time_zone: {type: string}
+        state: {type: string, x-known-values: [published, archived]}
+        version: {$ref: "#/components/schemas/Version"}
+        sites:
+          type: array
+          items: {$ref: "#/components/schemas/PublicSite"}
+    PublicOccurrencePage:
+      type: object
+      additionalProperties: false
+      required: [data, next_cursor]
+      properties:
+        data:
+          type: array
+          items: {$ref: "#/components/schemas/PublicOccurrence"}
+        next_cursor:
+          oneOf:
+            - {type: string, maxLength: 512}
+            - {type: "null"}
+    ServiceTask:
+      allOf:
+        - {$ref: "#/components/schemas/ServiceTaskCreate"}
+        - type: object
+          required: [id, organization_id, version]
+          properties:
+            id: {$ref: "#/components/schemas/UUID"}
+            organization_id: {$ref: "#/components/schemas/UUID"}
+            version: {$ref: "#/components/schemas/Version"}
+    Shift:
+      type: object
+      required: [id, organization_id, starts_at, ends_at, tasks, version]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        organization_id: {$ref: "#/components/schemas/UUID"}
+        starts_at: {$ref: "#/components/schemas/Timestamp"}
+        ends_at: {$ref: "#/components/schemas/Timestamp"}
+        tasks:
+          type: array
+          items: {$ref: "#/components/schemas/ServiceTask"}
+        version: {$ref: "#/components/schemas/Version"}
+    Site:
+      type: object
+      required:
+        [id, organization_id, name, public_location, precise_operations_address,
+         accessibility, arrival_notes, soft_target, shifts, version]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        organization_id: {$ref: "#/components/schemas/UUID"}
+        name: {type: string}
+        public_location: {type: string}
+        precise_operations_address: {type: string, writeOnly: true}
+        accessibility:
+          type: array
+          items: {type: string}
+        arrival_notes: {type: string}
+        soft_target: {type: integer}
+        hard_safety_limit:
+          oneOf:
+            - {type: integer}
+            - {type: "null"}
+        shifts:
+          type: array
+          items: {$ref: "#/components/schemas/Shift"}
+        version: {$ref: "#/components/schemas/Version"}
+    EventOccurrence:
+      type: object
+      required:
+        [id, organization_id, event_definition_id, starts_at, ends_at,
+         time_zone, state, sites, version]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        organization_id: {$ref: "#/components/schemas/UUID"}
+        event_definition_id: {$ref: "#/components/schemas/UUID"}
+        starts_at: {$ref: "#/components/schemas/Timestamp"}
+        ends_at: {$ref: "#/components/schemas/Timestamp"}
+        time_zone: {type: string}
+        state: {type: string, x-known-values: [draft, published, archived]}
+        sites:
+          type: array
+          items: {$ref: "#/components/schemas/Site"}
+        version: {$ref: "#/components/schemas/Version"}
+    TeamMode:
+      type: string
+      enum: [individual, prefer_together, must_stay_together]
+    ParticipantInput:
+      type: object
+      additionalProperties: false
+      required: [display_name]
+      properties:
+        profile_id: {$ref: "#/components/schemas/UUID"}
+        dependent_id: {$ref: "#/components/schemas/UUID"}
+        display_name: {type: string, minLength: 1, maxLength: 120}
+      oneOf:
+        - required: [profile_id]
+          not: {required: [dependent_id]}
+        - required: [dependent_id]
+          not: {required: [profile_id]}
+    RegistrationCreate:
+      type: object
+      additionalProperties: false
+      required: [occurrence_id, team_mode, participants, expected_occurrence_version]
+      properties:
+        occurrence_id: {$ref: "#/components/schemas/UUID"}
+        preferred_site_id:
+          oneOf:
+            - {$ref: "#/components/schemas/UUID"}
+            - {type: "null"}
+        team_id:
+          oneOf:
+            - {$ref: "#/components/schemas/UUID"}
+            - {type: "null"}
+        team_mode: {$ref: "#/components/schemas/TeamMode"}
+        participants:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items: {$ref: "#/components/schemas/ParticipantInput"}
+        accommodations:
+          oneOf:
+            - {type: string, maxLength: 2000}
+            - {type: "null"}
+        expected_occurrence_version: {$ref: "#/components/schemas/Version"}
+    RegistrationUpdate:
+      type: object
+      additionalProperties: false
+      required: [expected_version]
+      minProperties: 2
+      properties:
+        preferred_site_id:
+          oneOf:
+            - {$ref: "#/components/schemas/UUID"}
+            - {type: "null"}
+        team_mode: {$ref: "#/components/schemas/TeamMode"}
+        participants:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items: {$ref: "#/components/schemas/ParticipantInput"}
+        accommodations:
+          oneOf:
+            - {type: string, maxLength: 2000}
+            - {type: "null"}
+        expected_version: {$ref: "#/components/schemas/Version"}
+    RegistrationParticipant:
+      type: object
+      required: [id, organization_id, display_name, participant_type]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        organization_id: {$ref: "#/components/schemas/UUID"}
+        display_name: {type: string}
+        participant_type: {type: string, x-known-values: [adult_profile, dependent]}
+    Registration:
+      type: object
+      required:
+        [id, organization_id, occurrence_id, state, team_mode, participants,
+         required_document_ids, version]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        organization_id: {$ref: "#/components/schemas/UUID"}
+        occurrence_id: {$ref: "#/components/schemas/UUID"}
+        state:
+          type: string
+          x-known-values: [draft, submitted, waitlisted, assigned, cancelled]
+        team_mode: {$ref: "#/components/schemas/TeamMode"}
+        participants:
+          type: array
+          items: {$ref: "#/components/schemas/RegistrationParticipant"}
+        required_document_ids:
+          type: array
+          items: {$ref: "#/components/schemas/UUID"}
+        version: {$ref: "#/components/schemas/Version"}
+    ConsentMethod:
+      type: string
+      enum: [typed_name, electronic_signature, in_person_attestation]
+    ConsentCreate:
+      type: object
+      additionalProperties: false
+      required:
+        [document_id, registration_participant_id, accepted_name, locale,
+         method, expected_registration_version]
+      properties:
+        document_id: {$ref: "#/components/schemas/UUID"}
+        registration_participant_id: {$ref: "#/components/schemas/UUID"}
+        accepted_name: {type: string, minLength: 1, maxLength: 160}
+        locale: {type: string, minLength: 2, maxLength: 35}
+        method: {$ref: "#/components/schemas/ConsentMethod"}
+        expected_registration_version: {$ref: "#/components/schemas/Version"}
+    GuardianConsentCreate:
+      type: object
+      additionalProperties: false
+      required:
+        [document_id, dependent_id, registration_participant_id, relationship,
+         accepted_name, locale, method, expected_registration_version]
+      properties:
+        document_id: {$ref: "#/components/schemas/UUID"}
+        dependent_id: {$ref: "#/components/schemas/UUID"}
+        registration_participant_id: {$ref: "#/components/schemas/UUID"}
+        relationship: {type: string, enum: [parent, legal_guardian, authorized_guardian]}
+        accepted_name: {type: string, minLength: 1, maxLength: 160}
+        locale: {type: string, minLength: 2, maxLength: 35}
+        method: {$ref: "#/components/schemas/ConsentMethod"}
+        expected_registration_version: {$ref: "#/components/schemas/Version"}
+    ConsentEvidence:
+      type: object
+      required:
+        [id, organization_id, document_id, registration_participant_id,
+         signer_profile_id, accepted_at, method]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        organization_id: {$ref: "#/components/schemas/UUID"}
+        document_id: {$ref: "#/components/schemas/UUID"}
+        registration_participant_id: {$ref: "#/components/schemas/UUID"}
+        signer_profile_id: {$ref: "#/components/schemas/UUID"}
+        accepted_at: {$ref: "#/components/schemas/Timestamp"}
+        method: {$ref: "#/components/schemas/ConsentMethod"}
+    AssignmentPlanRequest:
+      type: object
+      additionalProperties: false
+      required: [occurrence_id, expected_occurrence_version]
+      properties:
+        occurrence_id: {$ref: "#/components/schemas/UUID"}
+        registration_ids:
+          type: array
+          minItems: 1
+          maxItems: 5000
+          uniqueItems: true
+          items: {$ref: "#/components/schemas/UUID"}
+        expected_occurrence_version: {$ref: "#/components/schemas/Version"}
+    Assignment:
+      type: object
+      required:
+        [id, organization_id, registration_id, site_id, state, version]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        organization_id: {$ref: "#/components/schemas/UUID"}
+        registration_id: {$ref: "#/components/schemas/UUID"}
+        site_id: {$ref: "#/components/schemas/UUID"}
+        shift_id:
+          oneOf:
+            - {$ref: "#/components/schemas/UUID"}
+            - {type: "null"}
+        state: {type: string, x-known-values: [proposed, confirmed, cancelled]}
+        version: {$ref: "#/components/schemas/Version"}
+    AssignmentPlan:
+      type: object
+      required: [plan_id, organization_id, occurrence_id, assignments, waitlisted_registration_ids, expires_at]
+      properties:
+        plan_id: {$ref: "#/components/schemas/UUID"}
+        organization_id: {$ref: "#/components/schemas/UUID"}
+        occurrence_id: {$ref: "#/components/schemas/UUID"}
+        assignments:
+          type: array
+          items: {$ref: "#/components/schemas/Assignment"}
+        waitlisted_registration_ids:
+          type: array
+          items: {$ref: "#/components/schemas/UUID"}
+        expires_at: {$ref: "#/components/schemas/Timestamp"}
+    AttendanceEventCreate:
+      type: object
+      additionalProperties: false
+      required: [registration_participant_id, assignment_id, kind, occurred_at, client_operation_id]
+      properties:
+        registration_participant_id: {$ref: "#/components/schemas/UUID"}
+        assignment_id: {$ref: "#/components/schemas/UUID"}
+        kind: {type: string, enum: [check_in, check_out]}
+        occurred_at: {$ref: "#/components/schemas/Timestamp"}
+        client_operation_id: {$ref: "#/components/schemas/UUID"}
+    AttendanceEvent:
+      allOf:
+        - {$ref: "#/components/schemas/AttendanceEventCreate"}
+        - type: object
+          required: [id, organization_id, recorded_at]
+          properties:
+            id: {$ref: "#/components/schemas/UUID"}
+            organization_id: {$ref: "#/components/schemas/UUID"}
+            recorded_at: {$ref: "#/components/schemas/Timestamp"}
+    AnnouncementCreate:
+      type: object
+      additionalProperties: false
+      required: [occurrence_id, audience, title, body, emergency]
+      properties:
+        occurrence_id: {$ref: "#/components/schemas/UUID"}
+        audience:
+          type: object
+          additionalProperties: false
+          required: [kind]
+          properties:
+            kind: {type: string, enum: [all_registered, assigned_site, role]}
+            site_id: {$ref: "#/components/schemas/UUID"}
+            role: {$ref: "#/components/schemas/OrganizationRole"}
+        title: {type: string, minLength: 1, maxLength: 160}
+        body: {type: string, minLength: 1, maxLength: 4000}
+        emergency: {type: boolean}
+    Announcement:
+      type: object
+      required: [id, organization_id, occurrence_id, state, estimated_recipients, version]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        organization_id: {$ref: "#/components/schemas/UUID"}
+        occurrence_id: {$ref: "#/components/schemas/UUID"}
+        state: {type: string, x-known-values: [queued, sending, delivered, failed]}
+        estimated_recipients: {type: integer, minimum: 0}
+        version: {$ref: "#/components/schemas/Version"}
+    IncidentCreate:
+      type: object
+      additionalProperties: false
+      required: [occurrence_id, site_id, category, severity, description, immediate_action]
+      properties:
+        occurrence_id: {$ref: "#/components/schemas/UUID"}
+        site_id: {$ref: "#/components/schemas/UUID"}
+        category: {type: string, minLength: 1, maxLength: 80}
+        severity: {type: string, enum: [low, moderate, high, critical]}
+        description: {type: string, minLength: 1, maxLength: 10000}
+        immediate_action: {type: string, maxLength: 4000}
+        affected_participant_ids:
+          type: array
+          maxItems: 100
+          uniqueItems: true
+          items: {$ref: "#/components/schemas/UUID"}
+    IncidentReference:
+      type: object
+      additionalProperties: false
+      required: [id, organization_id, occurrence_id, severity, created_at]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        organization_id: {$ref: "#/components/schemas/UUID"}
+        occurrence_id: {$ref: "#/components/schemas/UUID"}
+        severity: {type: string}
+        created_at: {$ref: "#/components/schemas/Timestamp"}
+    SafetyShareCreate:
+      type: object
+      additionalProperties: false
+      required: [occurrence_id, site_id, recipient_ids, expires_at, purpose]
+      properties:
+        occurrence_id: {$ref: "#/components/schemas/UUID"}
+        site_id: {$ref: "#/components/schemas/UUID"}
+        recipient_ids:
+          type: array
+          minItems: 1
+          maxItems: 20
+          uniqueItems: true
+          items: {$ref: "#/components/schemas/UUID"}
+        expires_at: {$ref: "#/components/schemas/Timestamp"}
+        purpose: {type: string, minLength: 1, maxLength: 240}
+    SafetyShare:
+      type: object
+      required:
+        [id, organization_id, occurrence_id, site_id, recipient_ids,
+         started_at, expires_at, state, version]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        organization_id: {$ref: "#/components/schemas/UUID"}
+        occurrence_id: {$ref: "#/components/schemas/UUID"}
+        site_id: {$ref: "#/components/schemas/UUID"}
+        recipient_ids:
+          type: array
+          items: {$ref: "#/components/schemas/UUID"}
+        started_at: {$ref: "#/components/schemas/Timestamp"}
+        expires_at: {$ref: "#/components/schemas/Timestamp"}
+        stopped_at:
+          oneOf:
+            - {$ref: "#/components/schemas/Timestamp"}
+            - {type: "null"}
+        state: {type: string, x-known-values: [active, stopped, expired]}
+        version: {$ref: "#/components/schemas/Version"}
+    SafetyLocationSample:
+      type: object
+      additionalProperties: false
+      required: [latitude, longitude, horizontal_accuracy_meters, captured_at]
+      properties:
+        latitude: {type: number, minimum: -90, maximum: 90}
+        longitude: {type: number, minimum: -180, maximum: 180}
+        horizontal_accuracy_meters: {type: number, minimum: 0, maximum: 10000}
+        captured_at: {$ref: "#/components/schemas/Timestamp"}
+    MediaUploadRequest:
+      type: object
+      additionalProperties: false
+      required: [occurrence_id, content_type, byte_count, checksum_sha256, caption]
+      properties:
+        occurrence_id: {$ref: "#/components/schemas/UUID"}
+        site_id:
+          oneOf:
+            - {$ref: "#/components/schemas/UUID"}
+            - {type: "null"}
+        content_type: {type: string, enum: [image/jpeg, image/png, image/heic]}
+        byte_count: {type: integer, minimum: 1, maximum: 26214400}
+        checksum_sha256: {type: string, pattern: "^[a-f0-9]{64}$"}
+        caption: {type: string, maxLength: 1000}
+        participant_visibility_attested: {type: boolean, const: true}
+    MediaUploadAuthorization:
+      type: object
+      additionalProperties: false
+      required: [media_id, upload_url, required_headers, expires_at]
+      properties:
+        media_id: {$ref: "#/components/schemas/UUID"}
+        upload_url: {type: string, format: uri}
+        required_headers:
+          type: object
+          additionalProperties: {type: string}
+        expires_at: {$ref: "#/components/schemas/Timestamp"}
+    MediaCompletion:
+      type: object
+      additionalProperties: false
+      required: [checksum_sha256, byte_count]
+      properties:
+        checksum_sha256: {type: string, pattern: "^[a-f0-9]{64}$"}
+        byte_count: {type: integer, minimum: 1, maximum: 26214400}
+    MediaAsset:
+      type: object
+      required: [id, organization_id, occurrence_id, state, created_at, version]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        organization_id: {$ref: "#/components/schemas/UUID"}
+        occurrence_id: {$ref: "#/components/schemas/UUID"}
+        state:
+          type: string
+          x-known-values:
+            [draft, uploaded_private, scanning, review_pending, approved,
+             rejected, published, unpublished, removed]
+        created_at: {$ref: "#/components/schemas/Timestamp"}
+        public_derivative_url:
+          oneOf:
+            - {type: string, format: uri}
+            - {type: "null"}
+        version: {$ref: "#/components/schemas/Version"}
+    MediaModerationActionCreate:
+      type: object
+      additionalProperties: false
+      required: [action, reason_code, expected_version]
+      properties:
+        action: {type: string, enum: [approve, reject, redact, publish, unpublish, remove]}
+        reason_code: {type: string, minLength: 1, maxLength: 80}
+        note: {type: string, maxLength: 2000}
+        expected_version: {$ref: "#/components/schemas/Version"}
+    MediaReportCreate:
+      type: object
+      additionalProperties: false
+      required: [reason_code]
+      properties:
+        reason_code: {type: string, enum: [privacy, minor_safety, consent, abuse, other]}
+        details: {type: string, maxLength: 2000}
+        contact_email: {type: string, format: email, maxLength: 320}
+    ReportReceipt:
+      type: object
+      additionalProperties: false
+      required: [report_id, state, received_at]
+      properties:
+        report_id: {$ref: "#/components/schemas/UUID"}
+        state: {type: string, x-known-values: [received, triaged, closed]}
+        received_at: {$ref: "#/components/schemas/Timestamp"}
+    ExportRequest:
+      type: object
+      additionalProperties: false
+      required: [occurrence_id, kind, format]
+      properties:
+        occurrence_id: {$ref: "#/components/schemas/UUID"}
+        kind: {type: string, enum: [attendance, hours, tasks, impact]}
+        format: {type: string, enum: [csv, json]}
+    Job:
+      type: object
+      required: [id, organization_id, kind, state, created_at, version]
+      properties:
+        id: {$ref: "#/components/schemas/UUID"}
+        organization_id: {$ref: "#/components/schemas/UUID"}
+        kind: {type: string}
+        state: {type: string, x-known-values: [queued, running, succeeded, failed, expired]}
+        created_at: {$ref: "#/components/schemas/Timestamp"}
+        result_url:
+          oneOf:
+            - {type: string, format: uri}
+            - {type: "null"}
+        result_expires_at:
+          oneOf:
+            - {$ref: "#/components/schemas/Timestamp"}
+            - {type: "null"}
+        version: {$ref: "#/components/schemas/Version"}
