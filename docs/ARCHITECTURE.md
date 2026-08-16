@@ -1,8 +1,8 @@
 # Architecture
 
-## Current direction
+## Implemented foundation
 
-DOS begins as a native iOS application using Swift and SwiftUI.
+DOS is a native iOS application using Swift and SwiftUI. The first vertical slice now supports public event discovery, accessible event detail, registration validation, version-aware waiver acceptance, confirmation, and an idempotent offline attendance queue.
 
 The initial source layout separates concerns without locking the project into a large architectural framework before requirements are known:
 
@@ -20,16 +20,15 @@ The initial source layout separates concerns without locking the project into a 
 4. Introduce additional patterns such as view models, repositories, dependency injection, or coordinators only when application complexity requires them.
 5. Favor Apple platform APIs and Swift concurrency for new native code unless a requirement justifies another dependency.
 
-## Next architectural decisions
+## Current boundaries
 
-These should be decided from actual product requirements rather than assumed during scaffolding:
+- The app targets iOS 17 and uses Swift structured concurrency.
+- `EventServing` isolates the UI from preview and production HTTP implementations.
+- `APIClient` implements the documented JSON, idempotency, status mapping, and ISO-8601 contracts without embedding credentials.
+- `OfflineAttendanceQueue` owns deduplication, persistence hooks, and reconciliation. Production must supply encrypted-at-rest persistence (Keychain-protected key) before event-day release.
+- Views include loading, empty, retry, validation, and success states and use semantic SwiftUI controls for Dynamic Type and VoiceOver.
+- Authentication, live Supabase configuration, guardian web consent, maps, media, notifications, and organizer surfaces remain server/environment-integrated milestones rather than simulated privileged client behavior.
 
-- supported iOS versions and device classes
-- authentication method
-- backend/API architecture
-- local/offline persistence requirements
-- notification requirements
-- ServiceNow or other enterprise integrations
-- accessibility and localization requirements
-- analytics and observability
-- deployment model and App Store/TestFlight/enterprise distribution
+## Local verification
+
+Core behavior is packaged independently of SwiftUI so it can be tested on macOS and Linux with `swift test`. The iOS application files remain directly consumable by an Xcode iOS app target.
