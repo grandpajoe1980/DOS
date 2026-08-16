@@ -13,7 +13,14 @@ public actor OfflineAttendanceQueue {
 
     public func enqueue(_ operation: AttendanceOperation) throws {
         guard !operations.contains(where: { $0.id == operation.id }) else { return }
-        operations.append(operation); try save()
+        operations.append(operation)
+        do { try save() } catch { operations.removeAll { $0.id == operation.id }; throw error }
+    }
+
+    public func remove(id: UUID) throws {
+        let previous = operations
+        operations.removeAll { $0.id == id }
+        do { try save() } catch { operations = previous; throw error }
     }
 
     public func pending() -> [AttendanceOperation] { operations }
@@ -23,8 +30,7 @@ public actor OfflineAttendanceQueue {
         for operation in operations {
             do {
                 try await service.recordAttendance(operation)
-                operations.removeAll { $0.id == operation.id }
-                try save()
+                try remove(id: operation.id)
             } catch { failures[operation.id] = error }
         }
         return failures
