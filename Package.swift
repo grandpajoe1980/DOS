@@ -14,3 +14,4 @@ let package = Package(
         .testTarget(name: "DOSCoreTests", dependencies: ["DOSCore"], path: "DOSTests", exclude: ["README.md"])
     ]
 )
+

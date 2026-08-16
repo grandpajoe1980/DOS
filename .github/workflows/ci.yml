@@ -1,0 +1,83 @@
+name: Pull Request CI
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  repository-quality:
+    name: Repository policy and secret scan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Show tool versions
+        run: python3 --version
+      - name: Lint foundation scripts
+        run: |
+          bash -n scripts/ci/*.sh
+          python3 -c 'import ast, pathlib; [ast.parse(path.read_text()) for path in pathlib.Path("scripts/ci").glob("*.py")]'
+      - name: Enforce repository policy
+        run: python3 scripts/ci/check_repository_policy.py
+      - name: Scan tracked files for credentials
+        run: python3 scripts/ci/check_secrets.py
+
+  contracts:
+    name: Versioned contract validation
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Validate OpenAPI, schemas, and fixtures
+        run: bash scripts/ci/validate_contracts.sh
+
+  dependency-review:
+    name: Dependency review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Review dependency changes
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: never
+
+  swift-and-ios:
+    name: SwiftPM and iOS simulator
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Show Apple toolchain versions
+        run: |
+          xcodebuild -version
+          swift --version
+      - name: Run SwiftPM tests with warnings as errors
+        run: swift test --parallel -Xswiftc -warnings-as-errors
+      - name: Build, test, and analyze iOS configurations
+        run: bash scripts/ci/xcode_ci.sh
