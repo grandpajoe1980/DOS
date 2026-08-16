@@ -1,0 +1,15 @@
+{
+  "error": {
+    "code": "hard_capacity_conflict",
+    "message": "The requested site no longer has enough safe capacity for this registration.",
+    "request_id": "req_01JYYYYYYYYYYYYYYYYYYYYYYYYY",
+    "retryable": false,
+    "field_errors": [
+      {
+        "pointer": "/preferred_site_id",
+        "code": "hard_capacity_conflict",
+        "message": "Choose another site or join the waitlist."
+      }
+    ]
+  }
+}
