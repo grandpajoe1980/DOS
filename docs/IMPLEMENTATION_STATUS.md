@@ -1,5 +1,10 @@
 # Day of Service implementation status
 
+> **Current checkpoint:** This document's detailed baseline was written before
+> PRs #12, #16, #17, #26, and #27 merged. Read `docs/AGENT_HANDOFF.md` first for
+> the authoritative 2026-08-16 repository state, exact commit IDs, active
+> blockers, and continuation order.
+
 Snapshot: 2026-08-16  
 Repository: `grandpajoe1980/DOS`  
 Default branch: `main` at `1c2a95286d2d4692b3ebdf47247b0bac0ff44a87`

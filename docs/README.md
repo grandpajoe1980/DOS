@@ -5,6 +5,9 @@ required to make it deployable. The source requirements and original product
 handoff remain under `documents/`; accepted ADRs and this directory record later
 clarifications and implementation decisions.
 
+- [Agent handoff](AGENT_HANDOFF.md) — current durable checkpoint, exact GitHub
+  refs, known blockers, validation commands, and recommended continuation order.
+
 ## Product and delivery
 
 - [Product requirements](PRODUCT_REQUIREMENTS.md) — normalized requirements,
@@ -12,7 +15,8 @@ clarifications and implementation decisions.
 - [Roadmap](ROADMAP.md) — milestones, dependencies, prioritized backlog, and
   currently parallel work.
 - [Implementation status](IMPLEMENTATION_STATUS.md) — evidence-based snapshot of
-  what is implemented, partial, blocked, or under review.
+  what is implemented, partial, blocked, or under review. Read the current
+  checkpoint note and agent handoff before relying on historical PR states.
 - [Team operating model](TEAM_OPERATING_MODEL.md) — role ownership, handoffs,
   path ownership, review independence, and anti-stalling rules.
 
