@@ -50,3 +50,33 @@ func unknownStates() throws {
     #expect(try JSONDecoder().decode(OccurrenceState.self, from: Data("\"new_server_state\"".utf8)) == .unknown)
     #expect(try JSONDecoder().decode(RegistrationState.self, from: Data("\"new_server_state\"".utf8)) == .unknown)
 }
+
+@Test("Production configuration rejects missing and placeholder API hosts")
+func productionConfigurationFailsClosed() {
+    #expect(throws: AppRuntimeConfigurationError.missingAPIHost) {
+        try AppRuntimeConfiguration(environment: "production", apiScheme: "https", apiHost: nil)
+    }
+    #expect(throws: AppRuntimeConfigurationError.placeholderAPIHost) {
+        try AppRuntimeConfiguration(environment: "production", apiScheme: "https", apiHost: "api.example.invalid")
+    }
+    #expect(throws: AppRuntimeConfigurationError.insecureAPIScheme) {
+        try AppRuntimeConfiguration(environment: "production", apiScheme: "http", apiHost: "api.example.org")
+    }
+}
+
+@Test("Live service selection is stable and derived from validated configuration")
+func liveServiceSelectionIsStable() throws {
+    let configuration = try AppRuntimeConfiguration(environment: "production", apiScheme: "https", apiHost: "api.example.org")
+    let first = AppDependencies.live(configuration: configuration)
+    let second = AppDependencies.live(configuration: configuration)
+    #expect(first.selection == .live(baseURL: configuration.apiBaseURL))
+    #expect(second.selection == first.selection)
+    #expect(first.selection != .preview)
+}
+
+#if DEBUG
+@Test("Preview service requires an explicit debug-only selection")
+func previewServiceSelectionIsExplicit() {
+    #expect(AppDependencies.preview().selection == .preview)
+}
+#endif
