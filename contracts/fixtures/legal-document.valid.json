@@ -1,0 +1,13 @@
+{
+  "id": "30000000-0000-4000-8000-000000000001",
+  "organization_id": "20000000-0000-4000-8000-000000000001",
+  "kind": "volunteer_waiver",
+  "version_label": "2026-08-en-US",
+  "locale": "en-US",
+  "content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "content": "Versioned volunteer waiver content.",
+  "published_at": "2026-08-16T18:00:00Z",
+  "retired_at": null,
+  "state": "active",
+  "record_version": 1
+}

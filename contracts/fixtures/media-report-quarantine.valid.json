@@ -1,0 +1,9 @@
+{
+  "report_id": "91000000-0000-4000-8000-000000000001",
+  "state": "received",
+  "received_at": "2027-01-16T19:05:00Z",
+  "quarantined_at": "2027-01-16T19:05:00Z",
+  "event_feed_state": "quarantined",
+  "public_gallery_state": "unpublished",
+  "media_version": 5
+}

@@ -1,0 +1,2168 @@
+{
+  "contract_version": "1.0.0-draft.2",
+  "operations": {
+    "DELETE /v1/dependents/{dependent_id}": {
+      "operation_id": "archiveDependent"
+    },
+    "DELETE /v1/safety-shares/{safety_share_id}": {
+      "operation_id": "stopSafetyShare"
+    },
+    "DELETE /v1/teams/{team_id}/members/{team_member_id}": {
+      "operation_id": "removeTeamMember"
+    },
+    "GET /v1/assignments/{assignment_id}/directions": {
+      "operation_id": "getAssignmentDirections"
+    },
+    "GET /v1/households/{household_id}": {
+      "operation_id": "getHousehold"
+    },
+    "GET /v1/jobs/{job_id}": {
+      "operation_id": "getJob"
+    },
+    "GET /v1/legal-documents/{legal_document_id}": {
+      "operation_id": "getLegalDocument"
+    },
+    "GET /v1/me": {
+      "operation_id": "getMyProfile"
+    },
+    "GET /v1/media/{media_id}/event-feed-delivery": {
+      "operation_id": "getEventFeedMediaDelivery"
+    },
+    "GET /v1/occurrences/{occurrence_id}/announcements": {
+      "operation_id": "listAnnouncements"
+    },
+    "GET /v1/occurrences/{occurrence_id}/legal-documents": {
+      "operation_id": "listOccurrenceLegalDocuments"
+    },
+    "GET /v1/occurrences/{occurrence_id}/media-feed": {
+      "operation_id": "listEventMediaFeed"
+    },
+    "GET /v1/occurrences/{occurrence_id}/preview": {
+      "operation_id": "previewEventOccurrence"
+    },
+    "GET /v1/occurrences/{occurrence_id}/roster": {
+      "operation_id": "listAssignedRoster"
+    },
+    "GET /v1/public/media/{media_id}/gallery-delivery": {
+      "operation_id": "getPublicGalleryMediaDelivery"
+    },
+    "GET /v1/public/occurrences/{occurrence_id}": {
+      "operation_id": "getPublicOccurrence"
+    },
+    "GET /v1/public/occurrences/{occurrence_id}/gallery": {
+      "operation_id": "listPublicMediaGallery"
+    },
+    "GET /v1/public/organizations/{slug}/occurrences": {
+      "operation_id": "listPublicOccurrences"
+    },
+    "GET /v1/registrations/{registration_id}/assignment": {
+      "operation_id": "getRegistrationAssignment"
+    },
+    "GET /v1/safety-shares/{safety_share_id}": {
+      "operation_id": "getSafetyShare"
+    },
+    "GET /v1/safety-shares/{safety_share_id}/locations": {
+      "operation_id": "getSafetyShareLocation"
+    },
+    "GET /v1/teams/{team_id}": {
+      "operation_id": "getTeam"
+    },
+    "PATCH /v1/dependents/{dependent_id}": {
+      "operation_id": "updateDependent"
+    },
+    "PATCH /v1/event-definitions/{event_definition_id}": {
+      "operation_id": "updateEventDefinition"
+    },
+    "PATCH /v1/me": {
+      "operation_id": "updateMyProfile"
+    },
+    "PATCH /v1/occurrences/{occurrence_id}": {
+      "operation_id": "updateEventOccurrence"
+    },
+    "PATCH /v1/organization-memberships/{membership_id}": {
+      "operation_id": "updateOrganizationMembership"
+    },
+    "PATCH /v1/registrations/{registration_id}": {
+      "operation_id": "updateRegistration"
+    },
+    "PATCH /v1/teams/{team_id}": {
+      "operation_id": "updateTeam"
+    },
+    "POST /v1/announcements": {
+      "operation_id": "createAnnouncement"
+    },
+    "POST /v1/assignments/plan": {
+      "operation_id": "planAssignments"
+    },
+    "POST /v1/assignments/{assignment_id}/confirm": {
+      "operation_id": "confirmAssignment"
+    },
+    "POST /v1/attendance-events": {
+      "operation_id": "createAttendanceEvent"
+    },
+    "POST /v1/consents": {
+      "operation_id": "createConsent"
+    },
+    "POST /v1/consents/{consent_id}/revoke": {
+      "operation_id": "revokeConsent"
+    },
+    "POST /v1/consents/{consent_id}/supersede": {
+      "operation_id": "supersedeConsent"
+    },
+    "POST /v1/event-definitions/{event_definition_id}/occurrences": {
+      "operation_id": "createEventOccurrence"
+    },
+    "POST /v1/exports": {
+      "operation_id": "createExport"
+    },
+    "POST /v1/guardian-consents": {
+      "operation_id": "createGuardianConsent"
+    },
+    "POST /v1/households": {
+      "operation_id": "createHousehold"
+    },
+    "POST /v1/households/{household_id}/dependents": {
+      "operation_id": "createDependent"
+    },
+    "POST /v1/incidents": {
+      "operation_id": "createIncident"
+    },
+    "POST /v1/me/deletion-requests": {
+      "operation_id": "createAccountDeletionRequest"
+    },
+    "POST /v1/me/exports": {
+      "operation_id": "createPersonalExport"
+    },
+    "POST /v1/media/uploads": {
+      "operation_id": "createMediaUpload"
+    },
+    "POST /v1/media/{media_id}/complete": {
+      "operation_id": "completeMediaUpload"
+    },
+    "POST /v1/media/{media_id}/moderation-actions": {
+      "operation_id": "createMediaModerationAction"
+    },
+    "POST /v1/media/{media_id}/reports": {
+      "operation_id": "createMediaReport"
+    },
+    "POST /v1/occurrences/{occurrence_id}/publish": {
+      "operation_id": "publishEventOccurrence"
+    },
+    "POST /v1/organization-invitations/{invitation_id}/accept": {
+      "operation_id": "acceptOrganizationInvitation"
+    },
+    "POST /v1/organization-invitations/{invitation_id}/revoke": {
+      "operation_id": "revokeOrganizationInvitation"
+    },
+    "POST /v1/organizations": {
+      "operation_id": "createOrganization"
+    },
+    "POST /v1/organizations/{organization_id}/event-definitions": {
+      "operation_id": "createEventDefinition"
+    },
+    "POST /v1/organizations/{organization_id}/invitations": {
+      "operation_id": "createOrganizationInvitation"
+    },
+    "POST /v1/registrations": {
+      "operation_id": "createRegistration"
+    },
+    "POST /v1/registrations/{registration_id}/submit": {
+      "operation_id": "submitRegistration"
+    },
+    "POST /v1/safety-shares": {
+      "operation_id": "createSafetyShare"
+    },
+    "POST /v1/safety-shares/{safety_share_id}/locations": {
+      "operation_id": "updateSafetyShareLocation"
+    },
+    "POST /v1/teams": {
+      "operation_id": "createTeam"
+    },
+    "POST /v1/teams/{team_id}/members": {
+      "operation_id": "addTeamMember"
+    }
+  },
+  "request_schemas": [
+    "AccountDeletionRequestCreate",
+    "AnnouncementCreate",
+    "AssignmentPlanRequest",
+    "AttendanceEventCreate",
+    "ConsentCreate",
+    "ConsentMethod",
+    "ConsentRevokeRequest",
+    "ConsentSupersedeRequest",
+    "DependentCreate",
+    "DependentUpdate",
+    "EventDefinitionCreate",
+    "EventDefinitionUpdate",
+    "EventOccurrenceCreate",
+    "EventOccurrenceUpdate",
+    "EventPublishRequest",
+    "ExportRequest",
+    "GuardianConsentCreate",
+    "GuardianRelationship",
+    "HouseholdCreate",
+    "IncidentCreate",
+    "InvitationAcceptRequest",
+    "InvitationCreate",
+    "MediaCompletion",
+    "MediaModerationActionCreate",
+    "MediaReportCreate",
+    "MediaUploadRequest",
+    "MembershipUpdate",
+    "OrganizationCreate",
+    "OrganizationRole",
+    "ParticipantInput",
+    "PersonalExportRequest",
+    "ProfileUpdate",
+    "RegistrationCreate",
+    "RegistrationUpdate",
+    "SafetyLocationSample",
+    "SafetyShareCreate",
+    "ServiceTaskCreate",
+    "ShiftCreate",
+    "SiteCreate",
+    "Slug",
+    "TeamCreate",
+    "TeamMemberAdd",
+    "TeamMode",
+    "TeamUpdate",
+    "Timestamp",
+    "UUID",
+    "Version",
+    "VersionExpectation"
+  ],
+  "response_schemas": [
+    "AccountDeletionRequest",
+    "Announcement",
+    "AnnouncementPage",
+    "ApproximateLocation",
+    "Assignment",
+    "AssignmentDetail",
+    "AssignmentDirections",
+    "AssignmentPlan",
+    "AttendanceEvent",
+    "ConsentEvidence",
+    "ConsentMethod",
+    "ConsentSupersession",
+    "Dependent",
+    "EventDefinition",
+    "EventOccurrence",
+    "EventOccurrencePreview",
+    "GuardianRelationship",
+    "Household",
+    "IncidentReference",
+    "Job",
+    "LegalDocument",
+    "LegalDocumentPage",
+    "MediaAsset",
+    "MediaDeliveryAuthorization",
+    "MediaEventFeedState",
+    "MediaFeedItem",
+    "MediaFeedPage",
+    "MediaProcessingState",
+    "MediaPublicGalleryState",
+    "MediaReportReceipt",
+    "MediaUploadAuthorization",
+    "Organization",
+    "OrganizationInvitation",
+    "OrganizationMembership",
+    "OrganizationRole",
+    "Profile",
+    "PublicGalleryItem",
+    "PublicGalleryPage",
+    "PublicOccurrence",
+    "PublicOccurrencePage",
+    "PublicSite",
+    "Registration",
+    "RegistrationParticipant",
+    "RosterPage",
+    "RosterParticipant",
+    "SafetyLocationSample",
+    "SafetyLocationView",
+    "SafetyShare",
+    "ServiceTask",
+    "Shift",
+    "Site",
+    "Slug",
+    "Team",
+    "TeamMember",
+    "TeamMode",
+    "Timestamp",
+    "UUID",
+    "Version"
+  ],
+  "schemas": {
+    "AccountDeletionRequest": {
+      "properties": [
+        "completed_at",
+        "id",
+        "profile_id",
+        "requested_at",
+        "retained_categories",
+        "state",
+        "version"
+      ],
+      "property_enums": {
+        "state": [
+          "requested",
+          "verifying",
+          "processing",
+          "completed",
+          "blocked_by_legal_hold",
+          "cancelled"
+        ]
+      },
+      "required": [
+        "id",
+        "profile_id",
+        "requested_at",
+        "retained_categories",
+        "state",
+        "version"
+      ]
+    },
+    "AccountDeletionRequestCreate": {
+      "properties": [
+        "confirmation",
+        "expected_profile_version",
+        "reason"
+      ],
+      "required": [
+        "confirmation",
+        "expected_profile_version"
+      ]
+    },
+    "Announcement": {
+      "properties": [
+        "body",
+        "created_at",
+        "emergency",
+        "estimated_recipients",
+        "id",
+        "occurrence_id",
+        "organization_id",
+        "state",
+        "title",
+        "version"
+      ],
+      "property_enums": {
+        "state": [
+          "queued",
+          "sending",
+          "delivered",
+          "failed"
+        ]
+      },
+      "required": [
+        "body",
+        "created_at",
+        "emergency",
+        "estimated_recipients",
+        "id",
+        "occurrence_id",
+        "organization_id",
+        "state",
+        "title",
+        "version"
+      ]
+    },
+    "AnnouncementCreate": {
+      "properties": [
+        "audience",
+        "body",
+        "emergency",
+        "occurrence_id",
+        "title"
+      ],
+      "required": [
+        "audience",
+        "body",
+        "emergency",
+        "occurrence_id",
+        "title"
+      ]
+    },
+    "AnnouncementPage": {
+      "properties": [
+        "data",
+        "next_cursor"
+      ],
+      "required": [
+        "data",
+        "next_cursor"
+      ]
+    },
+    "ApproximateLocation": {
+      "properties": [
+        "latitude",
+        "longitude",
+        "precision"
+      ],
+      "property_enums": {
+        "precision": [
+          "approximate",
+          "site_centroid",
+          "withheld"
+        ]
+      },
+      "required": [
+        "latitude",
+        "longitude",
+        "precision"
+      ]
+    },
+    "Assignment": {
+      "properties": [
+        "id",
+        "organization_id",
+        "registration_id",
+        "shift_id",
+        "site_id",
+        "state",
+        "version"
+      ],
+      "property_enums": {
+        "state": [
+          "proposed",
+          "confirmed",
+          "cancelled"
+        ]
+      },
+      "required": [
+        "id",
+        "organization_id",
+        "registration_id",
+        "site_id",
+        "state",
+        "version"
+      ]
+    },
+    "AssignmentDetail": {
+      "properties": [
+        "assignment",
+        "directions",
+        "ends_at",
+        "occurrence_title",
+        "starts_at",
+        "time_zone"
+      ],
+      "required": [
+        "assignment",
+        "directions",
+        "ends_at",
+        "occurrence_title",
+        "starts_at",
+        "time_zone"
+      ]
+    },
+    "AssignmentDirections": {
+      "properties": [
+        "arrival_notes",
+        "assignment_id",
+        "available_map_apps",
+        "latitude",
+        "longitude",
+        "precise_arrival_address",
+        "site_id",
+        "site_name"
+      ],
+      "required": [
+        "arrival_notes",
+        "assignment_id",
+        "available_map_apps",
+        "latitude",
+        "longitude",
+        "precise_arrival_address",
+        "site_id",
+        "site_name"
+      ]
+    },
+    "AssignmentPlan": {
+      "properties": [
+        "assignments",
+        "expires_at",
+        "occurrence_id",
+        "organization_id",
+        "plan_id",
+        "waitlisted_registration_ids"
+      ],
+      "required": [
+        "assignments",
+        "expires_at",
+        "occurrence_id",
+        "organization_id",
+        "plan_id",
+        "waitlisted_registration_ids"
+      ]
+    },
+    "AssignmentPlanRequest": {
+      "properties": [
+        "expected_occurrence_version",
+        "occurrence_id",
+        "registration_ids"
+      ],
+      "required": [
+        "expected_occurrence_version",
+        "occurrence_id"
+      ]
+    },
+    "AttendanceEvent": {
+      "properties": [
+        "assignment_id",
+        "client_operation_id",
+        "id",
+        "kind",
+        "occurred_at",
+        "organization_id",
+        "recorded_at",
+        "registration_participant_id"
+      ],
+      "property_enums": {
+        "kind": [
+          "check_in",
+          "check_out"
+        ]
+      },
+      "required": [
+        "assignment_id",
+        "client_operation_id",
+        "id",
+        "kind",
+        "occurred_at",
+        "organization_id",
+        "recorded_at",
+        "registration_participant_id"
+      ]
+    },
+    "AttendanceEventCreate": {
+      "properties": [
+        "assignment_id",
+        "client_operation_id",
+        "kind",
+        "occurred_at",
+        "registration_participant_id"
+      ],
+      "property_enums": {
+        "kind": [
+          "check_in",
+          "check_out"
+        ]
+      },
+      "required": [
+        "assignment_id",
+        "client_operation_id",
+        "kind",
+        "occurred_at",
+        "registration_participant_id"
+      ]
+    },
+    "ConsentCreate": {
+      "properties": [
+        "accepted_name",
+        "document_content_hash",
+        "document_id",
+        "document_version_label",
+        "expected_registration_version",
+        "locale",
+        "method",
+        "registration_participant_id"
+      ],
+      "property_enums": {
+        "method": [
+          "typed_name",
+          "electronic_signature",
+          "in_person_attestation"
+        ]
+      },
+      "required": [
+        "accepted_name",
+        "document_content_hash",
+        "document_id",
+        "document_version_label",
+        "expected_registration_version",
+        "locale",
+        "method",
+        "registration_participant_id"
+      ]
+    },
+    "ConsentEvidence": {
+      "properties": [
+        "accepted_at",
+        "accepted_name",
+        "document_content_hash",
+        "document_id",
+        "document_version_label",
+        "id",
+        "locale",
+        "method",
+        "organization_id",
+        "registration_participant_id",
+        "relationship",
+        "revoked_at",
+        "signer_profile_id",
+        "superseded_by",
+        "supersedes_id",
+        "version"
+      ],
+      "property_enums": {
+        "method": [
+          "typed_name",
+          "electronic_signature",
+          "in_person_attestation"
+        ]
+      },
+      "required": [
+        "accepted_at",
+        "accepted_name",
+        "document_content_hash",
+        "document_id",
+        "document_version_label",
+        "id",
+        "locale",
+        "method",
+        "organization_id",
+        "registration_participant_id",
+        "relationship",
+        "revoked_at",
+        "signer_profile_id",
+        "superseded_by",
+        "supersedes_id",
+        "version"
+      ]
+    },
+    "ConsentMethod": {
+      "enum": [
+        "typed_name",
+        "electronic_signature",
+        "in_person_attestation"
+      ],
+      "properties": [],
+      "required": []
+    },
+    "ConsentRevokeRequest": {
+      "properties": [
+        "expected_version",
+        "reason"
+      ],
+      "required": [
+        "expected_version",
+        "reason"
+      ]
+    },
+    "ConsentSupersedeRequest": {
+      "properties": [
+        "accepted_name",
+        "document_content_hash",
+        "document_id",
+        "document_version_label",
+        "expected_version",
+        "locale",
+        "method",
+        "relationship"
+      ],
+      "property_enums": {
+        "method": [
+          "typed_name",
+          "electronic_signature",
+          "in_person_attestation"
+        ]
+      },
+      "required": [
+        "accepted_name",
+        "document_content_hash",
+        "document_id",
+        "document_version_label",
+        "expected_version",
+        "locale",
+        "method"
+      ]
+    },
+    "ConsentSupersession": {
+      "properties": [
+        "current",
+        "previous"
+      ],
+      "required": [
+        "current",
+        "previous"
+      ]
+    },
+    "Dependent": {
+      "properties": [
+        "display_name",
+        "eligibility_birth_date",
+        "guardian_profile_id",
+        "household_id",
+        "id",
+        "media_visibility",
+        "state",
+        "version"
+      ],
+      "property_enums": {
+        "media_visibility": [
+          "hidden",
+          "event_feed_only",
+          "public_gallery_eligible"
+        ],
+        "state": [
+          "active",
+          "archived"
+        ]
+      },
+      "required": [
+        "display_name",
+        "guardian_profile_id",
+        "household_id",
+        "id",
+        "media_visibility",
+        "state",
+        "version"
+      ]
+    },
+    "DependentCreate": {
+      "properties": [
+        "display_name",
+        "eligibility_birth_date",
+        "media_visibility"
+      ],
+      "property_enums": {
+        "media_visibility": [
+          "hidden",
+          "event_feed_only",
+          "public_gallery_eligible"
+        ]
+      },
+      "required": [
+        "display_name",
+        "media_visibility"
+      ]
+    },
+    "DependentUpdate": {
+      "properties": [
+        "display_name",
+        "eligibility_birth_date",
+        "expected_version",
+        "media_visibility"
+      ],
+      "property_enums": {
+        "media_visibility": [
+          "hidden",
+          "event_feed_only",
+          "public_gallery_eligible"
+        ]
+      },
+      "required": [
+        "expected_version"
+      ]
+    },
+    "EventDefinition": {
+      "properties": [
+        "default_legal_document_id",
+        "description",
+        "eligibility",
+        "id",
+        "organization_id",
+        "registration_policy",
+        "title",
+        "version"
+      ],
+      "required": [
+        "description",
+        "eligibility",
+        "id",
+        "organization_id",
+        "registration_policy",
+        "title",
+        "version"
+      ]
+    },
+    "EventDefinitionCreate": {
+      "properties": [
+        "default_legal_document_id",
+        "description",
+        "eligibility",
+        "registration_policy",
+        "title"
+      ],
+      "required": [
+        "description",
+        "eligibility",
+        "registration_policy",
+        "title"
+      ]
+    },
+    "EventDefinitionUpdate": {
+      "properties": [
+        "default_legal_document_id",
+        "description",
+        "eligibility",
+        "expected_version",
+        "registration_policy",
+        "title"
+      ],
+      "required": [
+        "expected_version"
+      ]
+    },
+    "EventOccurrence": {
+      "properties": [
+        "ends_at",
+        "event_definition_id",
+        "id",
+        "organization_id",
+        "sites",
+        "starts_at",
+        "state",
+        "time_zone",
+        "version"
+      ],
+      "property_enums": {
+        "state": [
+          "draft",
+          "published",
+          "archived"
+        ]
+      },
+      "required": [
+        "ends_at",
+        "event_definition_id",
+        "id",
+        "organization_id",
+        "sites",
+        "starts_at",
+        "state",
+        "time_zone",
+        "version"
+      ]
+    },
+    "EventOccurrenceCreate": {
+      "properties": [
+        "ends_at",
+        "public_summary",
+        "registration_closes_at",
+        "registration_opens_at",
+        "sites",
+        "starts_at",
+        "time_zone"
+      ],
+      "required": [
+        "ends_at",
+        "public_summary",
+        "registration_closes_at",
+        "registration_opens_at",
+        "sites",
+        "starts_at",
+        "time_zone"
+      ]
+    },
+    "EventOccurrencePreview": {
+      "properties": [
+        "noindex",
+        "occurrence",
+        "preview"
+      ],
+      "required": [
+        "noindex",
+        "occurrence",
+        "preview"
+      ]
+    },
+    "EventOccurrenceUpdate": {
+      "properties": [
+        "ends_at",
+        "expected_version",
+        "public_summary",
+        "registration_closes_at",
+        "registration_opens_at",
+        "sites",
+        "starts_at",
+        "time_zone"
+      ],
+      "required": [
+        "expected_version"
+      ]
+    },
+    "EventPublishRequest": {
+      "properties": [
+        "confirmation",
+        "expected_version"
+      ],
+      "required": [
+        "confirmation",
+        "expected_version"
+      ]
+    },
+    "ExportRequest": {
+      "properties": [
+        "format",
+        "kind",
+        "occurrence_id"
+      ],
+      "property_enums": {
+        "format": [
+          "csv",
+          "json"
+        ],
+        "kind": [
+          "attendance",
+          "hours",
+          "tasks",
+          "impact"
+        ]
+      },
+      "required": [
+        "format",
+        "kind",
+        "occurrence_id"
+      ]
+    },
+    "GuardianConsentCreate": {
+      "properties": [
+        "accepted_name",
+        "dependent_id",
+        "document_content_hash",
+        "document_id",
+        "document_version_label",
+        "expected_registration_version",
+        "locale",
+        "method",
+        "registration_participant_id",
+        "relationship"
+      ],
+      "property_enums": {
+        "method": [
+          "typed_name",
+          "electronic_signature",
+          "in_person_attestation"
+        ],
+        "relationship": [
+          "parent",
+          "legal_guardian",
+          "authorized_guardian"
+        ]
+      },
+      "required": [
+        "accepted_name",
+        "dependent_id",
+        "document_content_hash",
+        "document_id",
+        "document_version_label",
+        "expected_registration_version",
+        "locale",
+        "method",
+        "registration_participant_id",
+        "relationship"
+      ]
+    },
+    "GuardianRelationship": {
+      "enum": [
+        "parent",
+        "legal_guardian",
+        "authorized_guardian"
+      ],
+      "properties": [],
+      "required": []
+    },
+    "Household": {
+      "properties": [
+        "dependents",
+        "display_name",
+        "guardian_profile_id",
+        "id",
+        "state",
+        "version"
+      ],
+      "property_enums": {
+        "state": [
+          "active",
+          "archived"
+        ]
+      },
+      "required": [
+        "dependents",
+        "display_name",
+        "guardian_profile_id",
+        "id",
+        "state",
+        "version"
+      ]
+    },
+    "HouseholdCreate": {
+      "properties": [
+        "display_name"
+      ],
+      "required": [
+        "display_name"
+      ]
+    },
+    "IncidentCreate": {
+      "properties": [
+        "affected_participant_ids",
+        "category",
+        "description",
+        "immediate_action",
+        "occurrence_id",
+        "severity",
+        "site_id"
+      ],
+      "property_enums": {
+        "severity": [
+          "low",
+          "moderate",
+          "high",
+          "critical"
+        ]
+      },
+      "required": [
+        "category",
+        "description",
+        "immediate_action",
+        "occurrence_id",
+        "severity",
+        "site_id"
+      ]
+    },
+    "IncidentReference": {
+      "properties": [
+        "created_at",
+        "id",
+        "occurrence_id",
+        "organization_id",
+        "severity"
+      ],
+      "property_enums": {
+        "severity": [
+          "low",
+          "moderate",
+          "high",
+          "critical"
+        ]
+      },
+      "required": [
+        "created_at",
+        "id",
+        "occurrence_id",
+        "organization_id",
+        "severity"
+      ]
+    },
+    "InvitationAcceptRequest": {
+      "properties": [
+        "expected_version",
+        "token"
+      ],
+      "required": [
+        "expected_version",
+        "token"
+      ]
+    },
+    "InvitationCreate": {
+      "properties": [
+        "assigned_site_ids",
+        "email",
+        "expires_at",
+        "roles"
+      ],
+      "required": [
+        "email",
+        "expires_at",
+        "roles"
+      ]
+    },
+    "Job": {
+      "properties": [
+        "created_at",
+        "id",
+        "kind",
+        "organization_id",
+        "result_expires_at",
+        "result_url",
+        "state",
+        "version"
+      ],
+      "property_enums": {
+        "kind": [
+          "personal_data_export",
+          "attendance_export",
+          "hours_export",
+          "tasks_export",
+          "impact_export"
+        ],
+        "state": [
+          "queued",
+          "running",
+          "succeeded",
+          "failed",
+          "expired"
+        ]
+      },
+      "required": [
+        "created_at",
+        "id",
+        "kind",
+        "organization_id",
+        "state",
+        "version"
+      ]
+    },
+    "LegalDocument": {
+      "properties": [
+        "content",
+        "content_hash",
+        "id",
+        "kind",
+        "locale",
+        "organization_id",
+        "published_at",
+        "record_version",
+        "retired_at",
+        "state",
+        "version_label"
+      ],
+      "property_enums": {
+        "kind": [
+          "volunteer_waiver",
+          "guardian_consent",
+          "media_release",
+          "privacy_notice"
+        ],
+        "state": [
+          "active",
+          "retired"
+        ]
+      },
+      "required": [
+        "content",
+        "content_hash",
+        "id",
+        "kind",
+        "locale",
+        "organization_id",
+        "published_at",
+        "record_version",
+        "state",
+        "version_label"
+      ]
+    },
+    "LegalDocumentPage": {
+      "properties": [
+        "data"
+      ],
+      "required": [
+        "data"
+      ]
+    },
+    "MediaAsset": {
+      "properties": [
+        "caption",
+        "created_at",
+        "event_feed_state",
+        "id",
+        "occurrence_id",
+        "organization_id",
+        "processed_at",
+        "processing_state",
+        "public_gallery_state",
+        "site_id",
+        "version"
+      ],
+      "property_enums": {
+        "event_feed_state": [
+          "hidden_pending_processing",
+          "visible",
+          "quarantined",
+          "removed"
+        ],
+        "processing_state": [
+          "awaiting_upload",
+          "uploaded_private",
+          "scanning",
+          "processing",
+          "ready",
+          "rejected"
+        ],
+        "public_gallery_state": [
+          "not_submitted",
+          "pending_review",
+          "approved",
+          "published",
+          "rejected",
+          "unpublished",
+          "removed"
+        ]
+      },
+      "required": [
+        "caption",
+        "created_at",
+        "event_feed_state",
+        "id",
+        "occurrence_id",
+        "organization_id",
+        "processed_at",
+        "processing_state",
+        "public_gallery_state",
+        "site_id",
+        "version"
+      ]
+    },
+    "MediaCompletion": {
+      "properties": [
+        "byte_count",
+        "checksum_sha256"
+      ],
+      "required": [
+        "byte_count",
+        "checksum_sha256"
+      ]
+    },
+    "MediaDeliveryAuthorization": {
+      "properties": [
+        "content_type",
+        "delivery_url",
+        "expires_at"
+      ],
+      "property_enums": {
+        "content_type": [
+          "image/jpeg",
+          "image/png",
+          "image/heic"
+        ]
+      },
+      "required": [
+        "content_type",
+        "delivery_url",
+        "expires_at"
+      ]
+    },
+    "MediaEventFeedState": {
+      "enum": [
+        "hidden_pending_processing",
+        "visible",
+        "quarantined",
+        "removed"
+      ],
+      "properties": [],
+      "required": []
+    },
+    "MediaFeedItem": {
+      "properties": [
+        "caption",
+        "created_at",
+        "id",
+        "occurrence_id",
+        "uploader_display_name"
+      ],
+      "required": [
+        "caption",
+        "created_at",
+        "id",
+        "occurrence_id",
+        "uploader_display_name"
+      ]
+    },
+    "MediaFeedPage": {
+      "properties": [
+        "data",
+        "next_cursor"
+      ],
+      "required": [
+        "data",
+        "next_cursor"
+      ]
+    },
+    "MediaModerationActionCreate": {
+      "properties": [
+        "action",
+        "expected_version",
+        "note",
+        "reason_code"
+      ],
+      "property_enums": {
+        "action": [
+          "restore_event_feed",
+          "reject",
+          "redact",
+          "approve_public_gallery",
+          "publish_public_gallery",
+          "unpublish_public_gallery",
+          "remove"
+        ]
+      },
+      "required": [
+        "action",
+        "expected_version",
+        "reason_code"
+      ]
+    },
+    "MediaProcessingState": {
+      "enum": [
+        "awaiting_upload",
+        "uploaded_private",
+        "scanning",
+        "processing",
+        "ready",
+        "rejected"
+      ],
+      "properties": [],
+      "required": []
+    },
+    "MediaPublicGalleryState": {
+      "enum": [
+        "not_submitted",
+        "pending_review",
+        "approved",
+        "published",
+        "rejected",
+        "unpublished",
+        "removed"
+      ],
+      "properties": [],
+      "required": []
+    },
+    "MediaReportCreate": {
+      "properties": [
+        "contact_email",
+        "details",
+        "reason_code"
+      ],
+      "property_enums": {
+        "reason_code": [
+          "privacy",
+          "minor_safety",
+          "consent",
+          "abuse",
+          "other"
+        ]
+      },
+      "required": [
+        "reason_code"
+      ]
+    },
+    "MediaReportReceipt": {
+      "properties": [
+        "event_feed_state",
+        "media_version",
+        "public_gallery_state",
+        "quarantined_at",
+        "received_at",
+        "report_id",
+        "state"
+      ],
+      "property_enums": {
+        "event_feed_state": [
+          "quarantined",
+          "removed"
+        ],
+        "public_gallery_state": [
+          "unpublished",
+          "rejected",
+          "removed"
+        ],
+        "state": [
+          "received"
+        ]
+      },
+      "required": [
+        "event_feed_state",
+        "media_version",
+        "public_gallery_state",
+        "quarantined_at",
+        "received_at",
+        "report_id",
+        "state"
+      ]
+    },
+    "MediaUploadAuthorization": {
+      "properties": [
+        "expires_at",
+        "media_id",
+        "required_headers",
+        "upload_url"
+      ],
+      "required": [
+        "expires_at",
+        "media_id",
+        "required_headers",
+        "upload_url"
+      ]
+    },
+    "MediaUploadRequest": {
+      "properties": [
+        "byte_count",
+        "caption",
+        "checksum_sha256",
+        "content_type",
+        "occurrence_id",
+        "participant_visibility_attested",
+        "site_id"
+      ],
+      "property_enums": {
+        "content_type": [
+          "image/jpeg",
+          "image/png",
+          "image/heic"
+        ]
+      },
+      "required": [
+        "byte_count",
+        "caption",
+        "checksum_sha256",
+        "content_type",
+        "occurrence_id",
+        "participant_visibility_attested"
+      ]
+    },
+    "MembershipUpdate": {
+      "properties": [
+        "assigned_site_ids",
+        "expected_version",
+        "roles",
+        "state"
+      ],
+      "property_enums": {
+        "state": [
+          "active",
+          "suspended",
+          "removed"
+        ]
+      },
+      "required": [
+        "expected_version"
+      ]
+    },
+    "Organization": {
+      "properties": [
+        "display_name",
+        "id",
+        "legal_name",
+        "owner_membership",
+        "slug",
+        "time_zone",
+        "version"
+      ],
+      "required": [
+        "display_name",
+        "id",
+        "legal_name",
+        "owner_membership",
+        "slug",
+        "time_zone",
+        "version"
+      ]
+    },
+    "OrganizationCreate": {
+      "properties": [
+        "display_name",
+        "legal_name",
+        "privacy_url",
+        "slug",
+        "support_url",
+        "time_zone"
+      ],
+      "required": [
+        "display_name",
+        "legal_name",
+        "privacy_url",
+        "slug",
+        "support_url",
+        "time_zone"
+      ]
+    },
+    "OrganizationInvitation": {
+      "properties": [
+        "email_hint",
+        "expires_at",
+        "id",
+        "organization_id",
+        "roles",
+        "state",
+        "version"
+      ],
+      "property_enums": {
+        "state": [
+          "pending",
+          "accepted",
+          "expired",
+          "revoked"
+        ]
+      },
+      "required": [
+        "email_hint",
+        "expires_at",
+        "id",
+        "organization_id",
+        "roles",
+        "state",
+        "version"
+      ]
+    },
+    "OrganizationMembership": {
+      "properties": [
+        "assigned_site_ids",
+        "id",
+        "organization_id",
+        "profile_id",
+        "roles",
+        "state",
+        "version"
+      ],
+      "property_enums": {
+        "state": [
+          "active",
+          "suspended",
+          "removed"
+        ]
+      },
+      "required": [
+        "assigned_site_ids",
+        "id",
+        "organization_id",
+        "profile_id",
+        "roles",
+        "state",
+        "version"
+      ]
+    },
+    "OrganizationRole": {
+      "enum": [
+        "org_owner",
+        "organizer",
+        "media_moderator",
+        "site_lead"
+      ],
+      "properties": [],
+      "required": []
+    },
+    "ParticipantInput": {
+      "properties": [
+        "dependent_id",
+        "profile_id"
+      ],
+      "required": []
+    },
+    "PersonalExportRequest": {
+      "properties": [
+        "format",
+        "scope"
+      ],
+      "property_enums": {
+        "format": [
+          "json",
+          "zip"
+        ],
+        "scope": [
+          "profile",
+          "all_eligible_personal_data"
+        ]
+      },
+      "required": [
+        "format",
+        "scope"
+      ]
+    },
+    "Profile": {
+      "properties": [
+        "accessibility_preferences",
+        "display_name",
+        "id",
+        "locale",
+        "time_zone",
+        "version"
+      ],
+      "required": [
+        "display_name",
+        "id",
+        "locale",
+        "time_zone",
+        "version"
+      ]
+    },
+    "ProfileUpdate": {
+      "properties": [
+        "accessibility_preferences",
+        "display_name",
+        "expected_version",
+        "locale",
+        "time_zone"
+      ],
+      "required": [
+        "expected_version"
+      ]
+    },
+    "PublicGalleryItem": {
+      "properties": [
+        "caption",
+        "id",
+        "occurrence_id",
+        "published_at"
+      ],
+      "required": [
+        "caption",
+        "id",
+        "occurrence_id",
+        "published_at"
+      ]
+    },
+    "PublicGalleryPage": {
+      "properties": [
+        "data",
+        "next_cursor"
+      ],
+      "required": [
+        "data",
+        "next_cursor"
+      ]
+    },
+    "PublicOccurrence": {
+      "properties": [
+        "ends_at",
+        "id",
+        "organization_id",
+        "sites",
+        "starts_at",
+        "state",
+        "summary",
+        "time_zone",
+        "title",
+        "version"
+      ],
+      "property_enums": {
+        "state": [
+          "published"
+        ]
+      },
+      "required": [
+        "ends_at",
+        "id",
+        "organization_id",
+        "sites",
+        "starts_at",
+        "state",
+        "summary",
+        "time_zone",
+        "title",
+        "version"
+      ]
+    },
+    "PublicOccurrencePage": {
+      "properties": [
+        "data",
+        "next_cursor"
+      ],
+      "required": [
+        "data",
+        "next_cursor"
+      ]
+    },
+    "PublicSite": {
+      "properties": [
+        "accessibility",
+        "approximate_location",
+        "id",
+        "name",
+        "organization_id",
+        "public_arrival_notes",
+        "public_location",
+        "soft_target"
+      ],
+      "required": [
+        "accessibility",
+        "id",
+        "name",
+        "organization_id",
+        "public_arrival_notes",
+        "public_location",
+        "soft_target"
+      ]
+    },
+    "Registration": {
+      "properties": [
+        "id",
+        "occurrence_id",
+        "organization_id",
+        "participants",
+        "required_document_ids",
+        "state",
+        "team_mode",
+        "version"
+      ],
+      "property_enums": {
+        "state": [
+          "draft",
+          "submitted",
+          "waitlisted",
+          "assigned",
+          "cancelled"
+        ],
+        "team_mode": [
+          "individual",
+          "prefer_together",
+          "must_stay_together"
+        ]
+      },
+      "required": [
+        "id",
+        "occurrence_id",
+        "organization_id",
+        "participants",
+        "required_document_ids",
+        "state",
+        "team_mode",
+        "version"
+      ]
+    },
+    "RegistrationCreate": {
+      "properties": [
+        "accommodations",
+        "expected_occurrence_version",
+        "occurrence_id",
+        "participants",
+        "preferred_site_id",
+        "team_id",
+        "team_mode"
+      ],
+      "property_enums": {
+        "team_mode": [
+          "individual",
+          "prefer_together",
+          "must_stay_together"
+        ]
+      },
+      "required": [
+        "expected_occurrence_version",
+        "occurrence_id",
+        "participants",
+        "team_mode"
+      ]
+    },
+    "RegistrationParticipant": {
+      "properties": [
+        "display_name",
+        "id",
+        "organization_id",
+        "participant_type"
+      ],
+      "property_enums": {
+        "participant_type": [
+          "adult_profile",
+          "dependent"
+        ]
+      },
+      "required": [
+        "display_name",
+        "id",
+        "organization_id",
+        "participant_type"
+      ]
+    },
+    "RegistrationUpdate": {
+      "properties": [
+        "accommodations",
+        "expected_version",
+        "participants",
+        "preferred_site_id",
+        "team_mode"
+      ],
+      "property_enums": {
+        "team_mode": [
+          "individual",
+          "prefer_together",
+          "must_stay_together"
+        ]
+      },
+      "required": [
+        "expected_version"
+      ]
+    },
+    "RosterPage": {
+      "properties": [
+        "data",
+        "next_cursor"
+      ],
+      "required": [
+        "data",
+        "next_cursor"
+      ]
+    },
+    "RosterParticipant": {
+      "properties": [
+        "assignment_id",
+        "attendance_state",
+        "display_name",
+        "participant_type",
+        "registration_participant_id"
+      ],
+      "property_enums": {
+        "attendance_state": [
+          "not_checked_in",
+          "checked_in",
+          "checked_out"
+        ],
+        "participant_type": [
+          "adult_profile",
+          "dependent"
+        ]
+      },
+      "required": [
+        "assignment_id",
+        "attendance_state",
+        "display_name",
+        "participant_type",
+        "registration_participant_id"
+      ]
+    },
+    "SafetyLocationSample": {
+      "properties": [
+        "captured_at",
+        "horizontal_accuracy_meters",
+        "latitude",
+        "longitude"
+      ],
+      "required": [
+        "captured_at",
+        "horizontal_accuracy_meters",
+        "latitude",
+        "longitude"
+      ]
+    },
+    "SafetyLocationView": {
+      "properties": [
+        "expires_at",
+        "latest_sample",
+        "safety_share_id",
+        "state"
+      ],
+      "property_enums": {
+        "state": [
+          "active"
+        ]
+      },
+      "required": [
+        "expires_at",
+        "latest_sample",
+        "safety_share_id",
+        "state"
+      ]
+    },
+    "SafetyShare": {
+      "properties": [
+        "expires_at",
+        "id",
+        "occurrence_id",
+        "organization_id",
+        "recipient_ids",
+        "site_id",
+        "started_at",
+        "state",
+        "stopped_at",
+        "version"
+      ],
+      "property_enums": {
+        "state": [
+          "active",
+          "stopped",
+          "expired"
+        ]
+      },
+      "required": [
+        "expires_at",
+        "id",
+        "occurrence_id",
+        "organization_id",
+        "recipient_ids",
+        "site_id",
+        "started_at",
+        "state",
+        "version"
+      ]
+    },
+    "SafetyShareCreate": {
+      "properties": [
+        "expires_at",
+        "occurrence_id",
+        "purpose",
+        "recipient_ids",
+        "site_id"
+      ],
+      "required": [
+        "expires_at",
+        "occurrence_id",
+        "purpose",
+        "recipient_ids",
+        "site_id"
+      ]
+    },
+    "ServiceTask": {
+      "properties": [
+        "accessibility_tags",
+        "description",
+        "id",
+        "minimum_age",
+        "organization_id",
+        "title",
+        "version"
+      ],
+      "required": [
+        "accessibility_tags",
+        "description",
+        "id",
+        "minimum_age",
+        "organization_id",
+        "title",
+        "version"
+      ]
+    },
+    "ServiceTaskCreate": {
+      "properties": [
+        "accessibility_tags",
+        "description",
+        "minimum_age",
+        "title"
+      ],
+      "required": [
+        "description",
+        "minimum_age",
+        "title"
+      ]
+    },
+    "Shift": {
+      "properties": [
+        "ends_at",
+        "id",
+        "organization_id",
+        "starts_at",
+        "tasks",
+        "version"
+      ],
+      "required": [
+        "ends_at",
+        "id",
+        "organization_id",
+        "starts_at",
+        "tasks",
+        "version"
+      ]
+    },
+    "ShiftCreate": {
+      "properties": [
+        "ends_at",
+        "starts_at",
+        "tasks"
+      ],
+      "required": [
+        "ends_at",
+        "starts_at",
+        "tasks"
+      ]
+    },
+    "Site": {
+      "properties": [
+        "accessibility",
+        "hard_safety_limit",
+        "id",
+        "name",
+        "organization_id",
+        "precise_operations_address",
+        "public_arrival_notes",
+        "public_location",
+        "shifts",
+        "soft_target",
+        "version"
+      ],
+      "required": [
+        "accessibility",
+        "id",
+        "name",
+        "organization_id",
+        "precise_operations_address",
+        "public_arrival_notes",
+        "public_location",
+        "shifts",
+        "soft_target",
+        "version"
+      ]
+    },
+    "SiteCreate": {
+      "properties": [
+        "accessibility",
+        "hard_safety_limit",
+        "name",
+        "precise_operations_address",
+        "public_arrival_notes",
+        "public_location",
+        "shifts",
+        "soft_target"
+      ],
+      "required": [
+        "accessibility",
+        "name",
+        "precise_operations_address",
+        "public_arrival_notes",
+        "public_location",
+        "shifts",
+        "soft_target"
+      ]
+    },
+    "Slug": {
+      "properties": [],
+      "required": []
+    },
+    "Team": {
+      "properties": [
+        "id",
+        "members",
+        "name",
+        "occurrence_id",
+        "organization_id",
+        "state",
+        "team_mode",
+        "version"
+      ],
+      "property_enums": {
+        "state": [
+          "active",
+          "closed"
+        ],
+        "team_mode": [
+          "individual",
+          "prefer_together",
+          "must_stay_together"
+        ]
+      },
+      "required": [
+        "id",
+        "members",
+        "name",
+        "occurrence_id",
+        "organization_id",
+        "state",
+        "team_mode",
+        "version"
+      ]
+    },
+    "TeamCreate": {
+      "properties": [
+        "name",
+        "occurrence_id",
+        "team_mode"
+      ],
+      "property_enums": {
+        "team_mode": [
+          "individual",
+          "prefer_together",
+          "must_stay_together"
+        ]
+      },
+      "required": [
+        "name",
+        "occurrence_id",
+        "team_mode"
+      ]
+    },
+    "TeamMember": {
+      "properties": [
+        "display_name",
+        "id",
+        "participant_id",
+        "participant_type",
+        "role",
+        "state",
+        "team_id",
+        "version"
+      ],
+      "property_enums": {
+        "participant_type": [
+          "adult_profile",
+          "dependent"
+        ],
+        "role": [
+          "leader",
+          "member"
+        ],
+        "state": [
+          "active",
+          "removed"
+        ]
+      },
+      "required": [
+        "display_name",
+        "id",
+        "participant_id",
+        "participant_type",
+        "role",
+        "state",
+        "team_id",
+        "version"
+      ]
+    },
+    "TeamMemberAdd": {
+      "properties": [
+        "dependent_id",
+        "profile_id",
+        "role"
+      ],
+      "property_enums": {
+        "role": [
+          "leader",
+          "member"
+        ]
+      },
+      "required": [
+        "role"
+      ]
+    },
+    "TeamMode": {
+      "enum": [
+        "individual",
+        "prefer_together",
+        "must_stay_together"
+      ],
+      "properties": [],
+      "required": []
+    },
+    "TeamUpdate": {
+      "properties": [
+        "expected_version",
+        "name",
+        "state",
+        "team_mode"
+      ],
+      "property_enums": {
+        "state": [
+          "active",
+          "closed"
+        ],
+        "team_mode": [
+          "individual",
+          "prefer_together",
+          "must_stay_together"
+        ]
+      },
+      "required": [
+        "expected_version"
+      ]
+    },
+    "Timestamp": {
+      "properties": [],
+      "required": []
+    },
+    "UUID": {
+      "properties": [],
+      "required": []
+    },
+    "Version": {
+      "properties": [],
+      "required": []
+    },
+    "VersionExpectation": {
+      "properties": [
+        "expected_version"
+      ],
+      "required": [
+        "expected_version"
+      ]
+    }
+  },
+  "surface_version": 1
+}

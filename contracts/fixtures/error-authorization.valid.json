@@ -1,0 +1,9 @@
+{
+  "error": {
+    "code": "forbidden_resource_scope",
+    "message": "You do not have access to this resource.",
+    "request_id": "req_authorization_001",
+    "retryable": false,
+    "field_errors": []
+  }
+}

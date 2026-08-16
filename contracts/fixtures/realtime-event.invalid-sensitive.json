@@ -1,0 +1,12 @@
+{
+  "event_id": "60000000-0000-4000-8000-000000000002",
+  "type": "safety_share.location_changed",
+  "organization_id": "20000000-0000-4000-8000-000000000001",
+  "aggregate_id": "80000000-0000-4000-8000-000000000001",
+  "aggregate_version": 2,
+  "occurred_at": "2027-01-16T18:00:00Z",
+  "cursor": "evt_000000000004",
+  "payload": {
+    "precise_location": {"latitude": 30.123456, "longitude": -91.123456}
+  }
+}

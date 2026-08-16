@@ -1,0 +1,9 @@
+{
+  "organization_id": "20000000-0000-4000-8000-000000000099",
+  "occurrence_id": "10000000-0000-4000-8000-000000000001",
+  "team_mode": "individual",
+  "participants": [
+    {"profile_id": "40000000-0000-4000-8000-000000000001"}
+  ],
+  "expected_occurrence_version": 4
+}

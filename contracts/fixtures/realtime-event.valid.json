@@ -1,0 +1,15 @@
+{
+  "event_id": "60000000-0000-4000-8000-000000000001",
+  "type": "registration.state_changed",
+  "organization_id": "20000000-0000-4000-8000-000000000001",
+  "aggregate_id": "70000000-0000-4000-8000-000000000001",
+  "aggregate_version": 3,
+  "occurred_at": "2027-01-10T17:30:00Z",
+  "cursor": "evt_000000000003",
+  "payload": {
+    "state": "assigned",
+    "occurrence_id": "10000000-0000-4000-8000-000000000001",
+    "site_id": "30000000-0000-4000-8000-000000000001",
+    "changed_fields": ["state", "site_id"]
+  }
+}

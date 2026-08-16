@@ -1,0 +1,12 @@
+{
+  "data": [
+    {
+      "id": "90000000-0000-4000-8000-000000000001",
+      "occurrence_id": "10000000-0000-4000-8000-000000000001",
+      "caption": "Volunteers preparing garden beds.",
+      "published_at": "2027-01-16T19:00:00Z",
+      "object_key": "private/originals/should-never-leak.heic"
+    }
+  ],
+  "next_cursor": null
+}

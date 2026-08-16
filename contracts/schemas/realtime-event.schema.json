@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dayofservice.example/contracts/v1/realtime-event.schema.json",
+  "title": "RealtimeEvent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "event_id",
+    "type",
+    "organization_id",
+    "aggregate_id",
+    "aggregate_version",
+    "occurred_at",
+    "cursor",
+    "payload"
+  ],
+  "properties": {
+    "event_id": {"type": "string", "format": "uuid"},
+    "type": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$"
+    },
+    "organization_id": {"type": "string", "format": "uuid"},
+    "aggregate_id": {"type": "string", "format": "uuid"},
+    "aggregate_version": {"type": "integer", "minimum": 1},
+    "occurred_at": {"type": "string", "format": "date-time"},
+    "cursor": {"type": "string", "minLength": 1, "maxLength": 512},
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "state": {"type": "string", "maxLength": 64},
+        "site_id": {"type": "string", "format": "uuid"},
+        "occurrence_id": {"type": "string", "format": "uuid"},
+        "changed_fields": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}
