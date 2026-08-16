@@ -1,0 +1,11 @@
+{
+  "occurrence_id": "0c94fb86-2fa2-4c37-b1dc-e202bb76a21b",
+  "audience": {
+    "kind": "assigned_site",
+    "site_id": "1b198f85-244d-49d0-a62b-f5b1317fe7b8",
+    "role": "site_lead"
+  },
+  "title": "Site update",
+  "body": "Please review the updated site instructions.",
+  "emergency": false
+}

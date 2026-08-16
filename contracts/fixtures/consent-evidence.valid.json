@@ -1,0 +1,18 @@
+{
+  "id": "31000000-0000-4000-8000-000000000001",
+  "organization_id": "20000000-0000-4000-8000-000000000001",
+  "document_id": "30000000-0000-4000-8000-000000000001",
+  "document_version_label": "2026-08-en-US",
+  "document_content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "registration_participant_id": "41000000-0000-4000-8000-000000000001",
+  "signer_profile_id": "40000000-0000-4000-8000-000000000001",
+  "accepted_name": "Alex Guardian",
+  "locale": "en-US",
+  "relationship": "parent",
+  "accepted_at": "2026-08-16T18:15:00Z",
+  "method": "typed_name",
+  "revoked_at": null,
+  "supersedes_id": null,
+  "superseded_by": null,
+  "version": 1
+}

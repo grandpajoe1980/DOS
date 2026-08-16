@@ -1,0 +1,12 @@
+{
+  "data": [
+    {
+      "id": "90000000-0000-4000-8000-000000000001",
+      "occurrence_id": "10000000-0000-4000-8000-000000000001",
+      "caption": "Volunteers preparing garden beds.",
+      "uploader_display_name": "Alex Volunteer",
+      "created_at": "2027-01-16T17:00:00Z"
+    }
+  ],
+  "next_cursor": null
+}

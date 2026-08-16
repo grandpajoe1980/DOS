@@ -1,0 +1,9 @@
+{
+  "error": {
+    "code": "hard_capacity_conflict",
+    "message": "Capacity changed before this registration could be committed.",
+    "request_id": "req_capacity_race_001",
+    "retryable": true,
+    "field_errors": []
+  }
+}

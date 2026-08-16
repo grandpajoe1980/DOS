@@ -6,6 +6,11 @@
       "valid": true
     },
     {
+      "path": "public-occurrences.invalid-sensitive.json",
+      "schema": {"openapi_pointer": "#/components/schemas/PublicOccurrencePage"},
+      "valid": false
+    },
+    {
       "path": "registration-create.valid.json",
       "schema": {"openapi_pointer": "#/components/schemas/RegistrationCreate"},
       "valid": true
@@ -16,7 +21,107 @@
       "valid": false
     },
     {
+      "path": "registration-create.invalid-tenant.json",
+      "schema": {"openapi_pointer": "#/components/schemas/RegistrationCreate"},
+      "valid": false
+    },
+    {
+      "path": "registration-create.invalid-display-name.json",
+      "schema": {"openapi_pointer": "#/components/schemas/RegistrationCreate"},
+      "valid": false
+    },
+    {
+      "path": "legal-document.valid.json",
+      "schema": {"openapi_pointer": "#/components/schemas/LegalDocument"},
+      "valid": true
+    },
+    {
+      "path": "consent-evidence.valid.json",
+      "schema": {"openapi_pointer": "#/components/schemas/ConsentEvidence"},
+      "valid": true
+    },
+    {
+      "path": "announcement.invalid-assigned-site-missing-site.json",
+      "schema": {"openapi_pointer": "#/components/schemas/AnnouncementCreate"},
+      "valid": false
+    },
+    {
+      "path": "announcement.invalid-role-missing-role.json",
+      "schema": {"openapi_pointer": "#/components/schemas/AnnouncementCreate"},
+      "valid": false
+    },
+    {
+      "path": "announcement.invalid-all-registered-with-site.json",
+      "schema": {"openapi_pointer": "#/components/schemas/AnnouncementCreate"},
+      "valid": false
+    },
+    {
+      "path": "announcement.invalid-assigned-site-with-role.json",
+      "schema": {"openapi_pointer": "#/components/schemas/AnnouncementCreate"},
+      "valid": false
+    },
+    {
+      "path": "announcement.invalid-role-with-site.json",
+      "schema": {"openapi_pointer": "#/components/schemas/AnnouncementCreate"},
+      "valid": false
+    },
+    {
+      "path": "media-processed-auto-feed.valid.json",
+      "schema": {"openapi_pointer": "#/components/schemas/MediaAsset"},
+      "valid": true
+    },
+    {
+      "path": "media-asset.invalid-unknown-enum.json",
+      "schema": {"openapi_pointer": "#/components/schemas/MediaAsset"},
+      "valid": false
+    },
+    {
+      "path": "media-feed.valid.json",
+      "schema": {"openapi_pointer": "#/components/schemas/MediaFeedPage"},
+      "valid": true
+    },
+    {
+      "path": "public-gallery.valid.json",
+      "schema": {"openapi_pointer": "#/components/schemas/PublicGalleryPage"},
+      "valid": true
+    },
+    {
+      "path": "public-gallery.invalid-sensitive.json",
+      "schema": {"openapi_pointer": "#/components/schemas/PublicGalleryPage"},
+      "valid": false
+    },
+    {
+      "path": "media-report-quarantine.valid.json",
+      "schema": {"openapi_pointer": "#/components/schemas/MediaReportReceipt"},
+      "valid": true
+    },
+    {
+      "path": "media-report.invalid-email.json",
+      "schema": {"openapi_pointer": "#/components/schemas/MediaReportCreate"},
+      "valid": false
+    },
+    {
+      "path": "media-upload-authorization.invalid-uri.json",
+      "schema": {"openapi_pointer": "#/components/schemas/MediaUploadAuthorization"},
+      "valid": false
+    },
+    {
       "path": "error-conflict.valid.json",
+      "schema": {"openapi_pointer": "#/components/schemas/ErrorEnvelope"},
+      "valid": true
+    },
+    {
+      "path": "error-authorization.valid.json",
+      "schema": {"openapi_pointer": "#/components/schemas/ErrorEnvelope"},
+      "valid": true
+    },
+    {
+      "path": "error-capacity-race.valid.json",
+      "schema": {"openapi_pointer": "#/components/schemas/ErrorEnvelope"},
+      "valid": true
+    },
+    {
+      "path": "error-media-race.valid.json",
       "schema": {"openapi_pointer": "#/components/schemas/ErrorEnvelope"},
       "valid": true
     },

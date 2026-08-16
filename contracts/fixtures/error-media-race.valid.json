@@ -1,0 +1,9 @@
+{
+  "error": {
+    "code": "media_state_conflict",
+    "message": "The media state changed before this action could be committed.",
+    "request_id": "req_media_race_001",
+    "retryable": true,
+    "field_errors": []
+  }
+}
